@@ -98,6 +98,13 @@
         
         .btn-download { background: transparent; border: 2px solid var(--border-active); color: var(--border-active); margin-top: 1rem; }
         .btn-download:hover { background: rgba(74, 158, 255, 0.1); }
+        
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .container { grid-template-columns: 1fr; padding: 1rem; }
+            .form-row, .form-row-2 { grid-template-columns: 1fr; }
+            h1 { font-size: 2rem; }
+        }
     </style>
 </head>
 <body>
