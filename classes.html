@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vanguard Campaign SRD - Custom Classes</title>
     <style>
-        /* CSS remains the same */
         :root {
             --bg-color: #090c10;
             --text-main: #c9d1d9;
@@ -186,13 +185,6 @@
     <div class="sidebar">
         <h2>📖 Vanguard SRD</h2>
         
-        <h3>ShadowNet Tiers</h3>
-        <ul>
-            <li><a href="#shadownet-apprentice">ShadowNet Apprentice</a></li>
-            <li><a href="#shadownet-operative">ShadowNet Operative</a></li>
-            <li><a href="#shadownet-weaver-high-tier">ShadowNet Weaver (High Tier)</a></li>
-            <li><a href="#shadownet-zenith-final-tier">ShadowNet Zenith (Final Tier)</a></li>
-        </ul>
         <h3>Classes</h3>
         <ul>
             <li><a href="#fleet-weaver">Fleet-Weaver</a></li>
@@ -205,37 +197,11 @@
             <li><a href="#sable-net-phantom">Sable-Net Phantom</a></li>
             <li><a href="#memory-siphon-agent">Memory-Siphon Agent</a></li>
             <li><a href="#logic-severer">Logic-Severer</a></li>
+            <li><a href="#shadow-net-operative">Shadow-Net Operative</a></li>
         </ul>
     </div>
 
     <div class="content">
-        <div class="class-section" style="border-color: #8e153f;">
-            <h1 style="color: #ff2a75; text-shadow: 0 0 15px rgba(255,42,117,0.6); border-bottom-color: rgba(255,42,117,0.2);">ShadowNet Ranked Tiers</h1>
-            <div class="desc">These progression tiers represent ascension within the elusive ShadowNet hierarchy. Characters gain these traits in addition to their class features.</div>
-            <h2 id="shadownet-apprentice" style="color: #ff2a75; margin-top: 40px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">ShadowNet Apprentice</h2>
-            <div class="ability-list">
-                <div class="ability-item" style="border-left-color: #ff2a75;"><span class="ability-name" style="color: #ff2a75;">Network Initiate</span><br> +2 on Knowledge (Local) and Arcana/Clockwork checks via basic aetheric interfacing.</div>
-                <div class="ability-item" style="border-left-color: #ff2a75;"><span class="ability-name" style="color: #ff2a75;">Flicker-Cloak</span><br> Activate a personal cloaking field (Invisibility) for 1 round, 1/day.</div>
-                <div class="ability-item" style="border-left-color: #ff2a75;"><span class="ability-name" style="color: #ff2a75;">Mind-Tap</span><br> Extract superficial warded data from an clockwork device with a physical mind-link.</div>
-            </div>
-            <h2 id="shadownet-operative" style="color: #ff2a75; margin-top: 40px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">ShadowNet Operative</h2>
-            <div class="ability-list">
-                <div class="ability-item" style="border-left-color: #ff2a75;"><span class="ability-name" style="color: #ff2a75;">Spire-Walker</span><br> Ignore difficult terrain in urban environments using grav-glyphs.</div>
-                <div class="ability-item" style="border-left-color: #ff2a75;"><span class="ability-name" style="color: #ff2a75;">Ghost-Override</span><br> 1/day, magically override an enemy golem or clockwork for 1 round (Will save negates).</div>
-                <div class="ability-item" style="border-left-color: #ff2a75;"><span class="ability-name" style="color: #ff2a75;">Silent-Caster Suppressor</span><br> Sneak attack deals +1d6 damage, and victims are caught in a localized silence field for 1 round, unable to cry out.</div>
-            </div>
-            <h2 id="shadownet-weaver-high-tier" style="color: #ff2a75; margin-top: 40px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">ShadowNet Weaver (High Tier)</h2>
-            <div class="ability-list">
-                <div class="ability-item" style="border-left-color: #ff2a75;"><span class="ability-name" style="color: #ff2a75;">Sovereign's Veil</span><br> Abjuration jamming grants Spell Resistance equal to 10 + Character Level against Divination and Enchantment.</div>
-                <div class="ability-item" style="border-left-color: #ff2a75;"><span class="ability-name" style="color: #ff2a75;">Override Command</span><br> Hack a biological target's mind, casting Dominate Person 1/day.</div>
-                <div class="ability-item" style="border-left-color: #ff2a75;"><span class="ability-name" style="color: #ff2a75;">Neural Feedback Loop</span><br> Anyone attempting to read your mind or hack your grafts takes 3d6 psychic damage.</div>
-            </div>
-            <h2 id="shadownet-zenith-final-tier" style="color: #ff2a75; margin-top: 40px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">ShadowNet Zenith (Final Tier)</h2>
-            <div class="ability-list">
-                <div class="ability-item" style="border-left-color: #ff2a75;"><span class="ability-name" style="color: #ff2a75;">Absolute Banishment Sigil</span><br> 1/day, shunt a target out of reality into a astral buffer for 1d4 rounds (acts as Maze or Banishment).</div>
-                <div class="ability-item" style="border-left-color: #ff2a75;"><span class="ability-name" style="color: #ff2a75;">Omnipresence Precognition</span><br> Precognitive combat flashes allow you to act in the surprise round and gain +4 to Initiative.</div>
-            </div>
-        </div>
         <div id="fleet-weaver" class="class-section">
             <h1>Fleet-Weaver</h1>
             <div class="desc">High-powered esoteric navigators capable of bending space, teleporting through ship hulls, and warping the battlefield.</div>
@@ -478,13 +444,14 @@
                 <h2>Class Features</h2>
                 <div class="ability-item"><span class="ability-name">Flesh-Knit</span><br> You manipulate biological matter with terrifying efficiency. As a standard action, you can heal a touched creature for 3d8 + your level hit points, or deal the same amount of damage to an enemy (Fortitude save halves). You can also use this to repair the organic components of bio-ships.</div>
                 <div class="ability-item"><span class="ability-name">Unnatural Strikes</span><br> You channel the unique power of the Suture's Abomination into a devastating attack. As a standard action, make a single attack. If it hits, it deals an additional 3d6 damage and the target must make a Fortitude save (DC 10 + 1/2 your level + primary modifier) or be staggered for 1 round.</div>
-                <div class="ability-item"><span class="ability-name">Graft: Rending Claws</span><br> By tapping into the core essence of the Suture's Abomination, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Graft</span><br> By tapping into the core essence of the Suture's Abomination, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Rending Claws</span><br> By tapping into the core essence of the Suture's Abomination, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
                 <div class="ability-item"><span class="ability-name">Bonus Mutation</span><br> By tapping into the core essence of the Suture's Abomination, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
-                <div class="ability-item"><span class="ability-name">Graft: Acidic Spit</span><br> By tapping into the core essence of the Suture's Abomination, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
-                <div class="ability-item"><span class="ability-name">Graft: Hardened Carapace</span><br> By tapping into the core essence of the Suture's Abomination, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
-                <div class="ability-item"><span class="ability-name">Graft: Second Heart</span><br> By tapping into the core essence of the Suture's Abomination, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
-                <div class="ability-item"><span class="ability-name">Graft: Vestigial Wings</span><br> By tapping into the core essence of the Suture's Abomination, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
-                <div class="ability-item"><span class="ability-name">Graft: Redundant Organs</span><br> By tapping into the core essence of the Suture's Abomination, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Acidic Spit</span><br> By tapping into the core essence of the Suture's Abomination, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Hardened Carapace</span><br> By tapping into the core essence of the Suture's Abomination, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Second Heart</span><br> By tapping into the core essence of the Suture's Abomination, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Vestigial Wings</span><br> By tapping into the core essence of the Suture's Abomination, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Redundant Organs</span><br> By tapping into the core essence of the Suture's Abomination, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
                 <div class="ability-item"><span class="ability-name">Immortal Abomination</span><br> You manipulate biological matter with terrifying efficiency. As a standard action, you can heal a touched creature for 3d8 + your level hit points, or deal the same amount of damage to an enemy (Fortitude save halves). You can also use this to repair the organic components of bio-ships.</div>
             </div>
         </div>
@@ -517,7 +484,8 @@
             <div class="ability-list">
                 <h2>Class Features</h2>
                 <div class="ability-item"><span class="ability-name">Biomancy Spells</span><br> You manipulate biological matter with terrifying efficiency. As a standard action, you can heal a touched creature for 3d8 + your level hit points, or deal the same amount of damage to an enemy (Fortitude save halves). You can also use this to repair the organic components of bio-ships.</div>
-                <div class="ability-item"><span class="ability-name">Flesh-Graft: Ally</span><br> You manipulate biological matter with terrifying efficiency. As a standard action, you can heal a touched creature for 3d8 + your level hit points, or deal the same amount of damage to an enemy (Fortitude save halves). You can also use this to repair the organic components of bio-ships.</div>
+                <div class="ability-item"><span class="ability-name">Flesh-Graft</span><br> You manipulate biological matter with terrifying efficiency. As a standard action, you can heal a touched creature for 3d8 + your level hit points, or deal the same amount of damage to an enemy (Fortitude save halves). You can also use this to repair the organic components of bio-ships.</div>
+                <div class="ability-item"><span class="ability-name">Ally</span><br> By tapping into the core essence of the Biomantic Flesh-Grafter, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
                 <div class="ability-item"><span class="ability-name">Surgical Precision</span><br> By tapping into the core essence of the Biomantic Flesh-Grafter, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
                 <div class="ability-item"><span class="ability-name">Bonus Biomantic Feat</span><br> You manipulate biological matter with terrifying efficiency. As a standard action, you can heal a touched creature for 3d8 + your level hit points, or deal the same amount of damage to an enemy (Fortitude save halves). You can also use this to repair the organic components of bio-ships.</div>
                 <div class="ability-item"><span class="ability-name">Mutagenic Serum</span><br> By tapping into the core essence of the Biomantic Flesh-Grafter, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
@@ -648,6 +616,63 @@
                 <div class="ability-item"><span class="ability-name">Gravity Inversion (60 ft radius</span><br> By tapping into the core essence of the Logic-Severer, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
                 <div class="ability-item"><span class="ability-name">selective)</span><br> By tapping into the core essence of the Logic-Severer, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
                 <div class="ability-item"><span class="ability-name">Author of the Glitch</span><br> By tapping into the core essence of the Logic-Severer, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+            </div>
+        </div>
+        <div id="shadow-net-operative" class="class-section">
+            <h1>Shadow-Net Operative</h1>
+            <div class="desc">An elite intelligence agent of the Vanguard, ascending through the ShadowNet ranks to gain unparalleled cybernetic and magical espionage capabilities.</div>
+            <table>
+                <tr><th>Level</th><th>BAB</th><th>Fort</th><th>Ref</th><th>Will</th><th>Special</th></tr>
+                <tr><td>1</td><td>+0</td><td>+0</td><td>+2</td><td>+2</td><td class="special">ShadowNet Apprentice: Network Initiate, Flicker-Cloak, Mind-Tap</td></tr>
+                <tr><td>2</td><td>+1</td><td>+0</td><td>+3</td><td>+3</td><td class="special">Evasion</td></tr>
+                <tr><td>3</td><td>+2</td><td>+1</td><td>+3</td><td>+3</td><td class="special">Sneak Attack +1d6</td></tr>
+                <tr><td>4</td><td>+5</td><td>+1</td><td>+4</td><td>+4</td><td class="special">Uncanny Dodge</td></tr>
+                <tr><td>5</td><td>+5</td><td>+1</td><td>+4</td><td>+4</td><td class="special">ShadowNet Operative: Spire-Walker, Ghost-Override, Silent-Caster Suppressor</td></tr>
+                <tr><td>6</td><td>+6</td><td>+2</td><td>+5</td><td>+5</td><td class="special">Bonus Talent</td></tr>
+                <tr><td>7</td><td>+7</td><td>+2</td><td>+5</td><td>+5</td><td class="special">Sneak Attack +2d6</td></tr>
+                <tr><td>8</td><td>+10</td><td>+2</td><td>+6</td><td>+6</td><td class="special">Improved Evasion</td></tr>
+                <tr><td>9</td><td>+10</td><td>+3</td><td>+6</td><td>+6</td><td class="special">Bonus Talent</td></tr>
+                <tr><td>10</td><td>+11</td><td>+3</td><td>+7</td><td>+7</td><td class="special">ShadowNet Weaver (High Tier): Sovereign's Veil, Override Command, Neural Feedback Loop</td></tr>
+                <tr><td>11</td><td>+12</td><td>+3</td><td>+7</td><td>+7</td><td class="special">Sneak Attack +3d6</td></tr>
+                <tr><td>12</td><td>+15</td><td>+4</td><td>+8</td><td>+8</td><td class="special">Bonus Talent</td></tr>
+                <tr><td>13</td><td>+15</td><td>+4</td><td>+8</td><td>+8</td><td class="special">Improved Uncanny Dodge</td></tr>
+                <tr><td>14</td><td>+16</td><td>+4</td><td>+9</td><td>+9</td><td class="special">Bonus Talent</td></tr>
+                <tr><td>15</td><td>+17</td><td>+5</td><td>+9</td><td>+9</td><td class="special">ShadowNet Zenith (Final Tier): Absolute Banishment Sigil, Omnipresence Precognition</td></tr>
+                <tr><td>16</td><td>+20</td><td>+5</td><td>+10</td><td>+10</td><td class="special">Sneak Attack +4d6</td></tr>
+                <tr><td>17</td><td>+20</td><td>+5</td><td>+10</td><td>+10</td><td class="special">Bonus Talent</td></tr>
+                <tr><td>18</td><td>+21</td><td>+6</td><td>+11</td><td>+11</td><td class="special">Supreme Evasion</td></tr>
+                <tr><td>19</td><td>+22</td><td>+6</td><td>+11</td><td>+11</td><td class="special">Sneak Attack +5d6</td></tr>
+                <tr><td>20</td><td>+25</td><td>+6</td><td>+12</td><td>+12</td><td class="special">Sovereign Net Uplink (Capstone)</td></tr>
+            </table>
+            <div class="ability-list">
+                <h2>Class Features</h2>
+                <div class="ability-item"><span class="ability-name">ShadowNet Apprentice</span><br> By tapping into the core essence of the Shadow-Net Operative, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Network Initiate</span><br> +2 on Knowledge (Local) and Arcana/Clockwork checks via basic aetheric interfacing.</div>
+                <div class="ability-item"><span class="ability-name">Flicker-Cloak</span><br> Activate a personal cloaking field (Invisibility) for 1 round, 1/day.</div>
+                <div class="ability-item"><span class="ability-name">Mind-Tap</span><br> Extract superficial warded data from an clockwork device with a physical mind-link.</div>
+                <div class="ability-item"><span class="ability-name">Evasion</span><br> If you make a successful Reflex saving throw against an attack that normally deals half damage on a successful save, you instead take no damage.</div>
+                <div class="ability-item"><span class="ability-name">Sneak Attack +1d6</span><br> You channel the unique power of the Shadow-Net Operative into a devastating attack. As a standard action, make a single attack. If it hits, it deals an additional 3d6 damage and the target must make a Fortitude save (DC 10 + 1/2 your level + primary modifier) or be staggered for 1 round.</div>
+                <div class="ability-item"><span class="ability-name">Uncanny Dodge</span><br> You retain your Dexterity bonus to AC (if any) even if you are caught flat-footed or struck by an invisible attacker.</div>
+                <div class="ability-item"><span class="ability-name">ShadowNet Operative</span><br> By tapping into the core essence of the Shadow-Net Operative, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Spire-Walker</span><br> Ignore difficult terrain in urban environments using grav-glyphs.</div>
+                <div class="ability-item"><span class="ability-name">Ghost-Override</span><br> 1/day, magically override an enemy golem or clockwork for 1 round (Will save negates).</div>
+                <div class="ability-item"><span class="ability-name">Silent-Caster Suppressor</span><br> Sneak attack deals +1d6 damage, and victims are caught in a localized silence field for 1 round, unable to cry out.</div>
+                <div class="ability-item"><span class="ability-name">Bonus Talent</span><br> You gain a bonus feat or Magick Talent from your approved class list.</div>
+                <div class="ability-item"><span class="ability-name">Sneak Attack +2d6</span><br> You channel the unique power of the Shadow-Net Operative into a devastating attack. As a standard action, make a single attack. If it hits, it deals an additional 3d6 damage and the target must make a Fortitude save (DC 10 + 1/2 your level + primary modifier) or be staggered for 1 round.</div>
+                <div class="ability-item"><span class="ability-name">Improved Evasion</span><br> If you make a successful Reflex saving throw against an attack that normally deals half damage on a successful save, you instead take no damage.</div>
+                <div class="ability-item"><span class="ability-name">ShadowNet Weaver (High Tier)</span><br> By tapping into the core essence of the Shadow-Net Operative, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Sovereign's Veil</span><br> Abjuration jamming grants Spell Resistance equal to 10 + Character Level against Divination and Enchantment.</div>
+                <div class="ability-item"><span class="ability-name">Override Command</span><br> Hack a biological target's mind, casting Dominate Person 1/day.</div>
+                <div class="ability-item"><span class="ability-name">Neural Feedback Loop</span><br> Anyone attempting to read your mind or hack your grafts takes 3d6 psychic damage.</div>
+                <div class="ability-item"><span class="ability-name">Sneak Attack +3d6</span><br> You channel the unique power of the Shadow-Net Operative into a devastating attack. As a standard action, make a single attack. If it hits, it deals an additional 3d6 damage and the target must make a Fortitude save (DC 10 + 1/2 your level + primary modifier) or be staggered for 1 round.</div>
+                <div class="ability-item"><span class="ability-name">Improved Uncanny Dodge</span><br> You retain your Dexterity bonus to AC (if any) even if you are caught flat-footed or struck by an invisible attacker.</div>
+                <div class="ability-item"><span class="ability-name">ShadowNet Zenith (Final Tier)</span><br> By tapping into the core essence of the Shadow-Net Operative, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Absolute Banishment Sigil</span><br> 1/day, shunt a target out of reality into a astral buffer for 1d4 rounds (acts as Maze or Banishment).</div>
+                <div class="ability-item"><span class="ability-name">Omnipresence Precognition</span><br> Precognitive combat flashes allow you to act in the surprise round and gain +4 to Initiative.</div>
+                <div class="ability-item"><span class="ability-name">Sneak Attack +4d6</span><br> You channel the unique power of the Shadow-Net Operative into a devastating attack. As a standard action, make a single attack. If it hits, it deals an additional 3d6 damage and the target must make a Fortitude save (DC 10 + 1/2 your level + primary modifier) or be staggered for 1 round.</div>
+                <div class="ability-item"><span class="ability-name">Supreme Evasion</span><br> If you make a successful Reflex saving throw against an attack that normally deals half damage on a successful save, you instead take no damage.</div>
+                <div class="ability-item"><span class="ability-name">Sneak Attack +5d6</span><br> You channel the unique power of the Shadow-Net Operative into a devastating attack. As a standard action, make a single attack. If it hits, it deals an additional 3d6 damage and the target must make a Fortitude save (DC 10 + 1/2 your level + primary modifier) or be staggered for 1 round.</div>
+                <div class="ability-item"><span class="ability-name">Sovereign Net Uplink</span><br> Can spend 1 hour to fully synchronize with the Sovereign Net, acting as Commune or Contact Other Plane via direct mind-feed.</div>
             </div>
         </div>
     </div>
