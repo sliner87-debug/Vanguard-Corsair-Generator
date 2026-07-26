@@ -727,6 +727,59 @@
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
         });
+    
+        // Class Details Modal Logic
+        document.getElementById('btn-view-class-details').addEventListener('click', () => {
+            const className = document.getElementById('class-input').value;
+            const modal = document.getElementById('class-modal');
+            const title = document.getElementById('modal-class-title');
+            const desc = document.getElementById('modal-class-desc');
+            const tableContainer = document.getElementById('modal-class-table-container');
+            
+            if (!className) return;
+            
+            title.textContent = className;
+            tableContainer.innerHTML = '';
+            
+            if (db.Class_Details && db.Class_Details[className]) {
+                const details = db.Class_Details[className];
+                desc.textContent = details.description;
+                
+                let tableHTML = `<table style="width:100%; border-collapse:collapse; text-align:left; color:var(--text-main); font-size:0.9em; margin-bottom:20px;">
+                    <thead>
+                        <tr style="border-bottom:2px solid var(--accent-cyan); background:rgba(0, 255, 255, 0.1);">
+                            <th style="padding:10px;">Lvl</th>
+                            <th style="padding:10px;">BAB</th>
+                            <th style="padding:10px;">Fort</th>
+                            <th style="padding:10px;">Ref</th>
+                            <th style="padding:10px;">Will</th>
+                            <th style="padding:10px;">Special</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+                
+                details.progression.forEach((row, i) => {
+                    const bg = i % 2 === 0 ? 'background:rgba(255,255,255,0.02);' : '';
+                    tableHTML += `<tr style="border-bottom:1px solid var(--border-active); ${bg}">
+                        <td style="padding:10px; color:var(--accent-cyan); font-weight:bold;">${row.level}</td>
+                        <td style="padding:10px;">${row.bab}</td>
+                        <td style="padding:10px;">${row.fort}</td>
+                        <td style="padding:10px;">${row.ref}</td>
+                        <td style="padding:10px;">${row.will}</td>
+                        <td style="padding:10px; color:var(--accent-pink);">${row.special}</td>
+                    </tr>`;
+                });
+                
+                tableHTML += `</tbody></table>`;
+                tableContainer.innerHTML = tableHTML;
+                modal.style.display = 'block';
+            } else {
+                desc.textContent = "No detailed custom progression found for this class. It likely uses standard SRD rules.";
+                tableContainer.innerHTML = "<p style='color:var(--border-active); padding:20px; border:1px dashed var(--border-active); text-align:center;'>Please click the 📖 icon next to the class input to search the SRD.</p>";
+                modal.style.display = 'block';
+            }
+        });
+
     </script>
 
     <!-- Class Details Modal -->
