@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vanguard Campaign SRD - Custom Classes</title>
+    <style>
+        :root {
+            --bg-color: #090c10;
+            --text-main: #c9d1d9;
+            --accent: #4a9eff;
+            --accent-glow: 0 0 15px rgba(74, 158, 255, 0.6);
+            --card-bg: rgba(22, 27, 34, 0.85);
+            --border: #30363d;
+            --table-header: rgba(74, 158, 255, 0.15);
+            --table-border: #4a9eff;
+        }
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at top right, rgba(74, 158, 255, 0.05), transparent 50%);
+            color: var(--text-main);
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--card-bg);
+            border-right: 1px solid var(--border);
+            padding: 25px;
+            height: 100vh;
+            position: fixed;
+            overflow-y: auto;
+            backdrop-filter: blur(15px);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+            z-index: 100;
+        }
+        .sidebar h2 {
+            color: var(--accent);
+            text-shadow: var(--accent-glow);
+            margin-top: 0;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar li {
+            margin: 12px 0;
+        }
+        .sidebar a {
+            color: var(--text-main);
+            text-decoration: none;
+            transition: 0.3s;
+            font-size: 0.95rem;
+            display: block;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+        .sidebar a:hover {
+            color: #fff;
+            background: rgba(74, 158, 255, 0.1);
+            text-shadow: var(--accent-glow);
+            box-shadow: inset 2px 0 0 var(--accent);
+        }
+        /* Main Content */
+        .content {
+            margin-left: 310px;
+            padding: 50px;
+            max-width: 900px;
+            width: 100%;
+        }
+        .class-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 60px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        .class-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+        .class-section h1 {
+            color: var(--accent);
+            font-size: 2.8rem;
+            margin-top: 0;
+            border-bottom: 1px solid rgba(74, 158, 255, 0.2);
+            padding-bottom: 15px;
+            text-shadow: var(--accent-glow);
+            letter-spacing: 1px;
+        }
+        .desc {
+            font-size: 1.15rem;
+            line-height: 1.7;
+            margin-bottom: 35px;
+            font-style: italic;
+            color: #a3b3c4;
+            border-left: 3px solid var(--accent);
+            padding-left: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 40px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        th, td {
+            border-bottom: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            padding: 12px;
+            text-align: center;
+        }
+        th:last-child, td:last-child {
+            border-right: none;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        th {
+            background: var(--table-header);
+            color: var(--accent);
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        tr:nth-child(even) {
+            background: rgba(255,255,255,0.02);
+        }
+        td.special {
+            text-align: left;
+            color: #e6edf3;
+            font-weight: 500;
+        }
+        .ability-list h2 {
+            color: var(--accent);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            margin-top: 0;
+            font-size: 1.8rem;
+        }
+        .ability-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 6px;
+            border-left: 2px solid var(--border);
+            line-height: 1.6;
+        }
+        .ability-name {
+            font-weight: bold;
+            color: var(--accent);
+            font-size: 1.1rem;
+            display: inline-block;
+            margin-bottom: 5px;
+            text-shadow: 0 0 5px rgba(74,158,255,0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>📖 Vanguard SRD</h2>
+        <ul>
+            <li><a href="#fleet-weaver">Fleet-Weaver</a></li>
+            <li><a href="#null-zone-enforcer">Null-Zone Enforcer</a></li>
+            <li><a href="#chronal-warp-sniper">Chronal-Warp Sniper</a></li>
+            <li><a href="#abyssal-boarder">Abyssal Boarder</a></li>
+            <li><a href="#symbiotic-hull-mender">Symbiotic Hull-Mender</a></li>
+            <li><a href="#sutures-abomination">Suture's Abomination</a></li>
+            <li><a href="#biomantic-flesh-grafter">Biomantic Flesh-Grafter</a></li>
+            <li><a href="#sable-net-phantom">Sable-Net Phantom</a></li>
+            <li><a href="#memory-siphon-agent">Memory-Siphon Agent</a></li>
+            <li><a href="#logic-severer">Logic-Severer</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <div id="fleet-weaver" class="class-section">
+            <h1>Fleet-Weaver</h1>
+            <div class="desc">High-powered esoteric navigators capable of bending space, teleporting through ship hulls, and warping the battlefield.</div>
+            <table>
+                <tr><th>Level</th><th>BAB</th><th>Fort</th><th>Ref</th><th>Will</th><th>Special</th></tr>
+                <tr><td>1</td><td>+0</td><td>+0</td><td>+2</td><td>+2</td><td class="special">Spatial Tear (10 ft), Void-Sight</td></tr>
+                <tr><td>2</td><td>+1</td><td>+0</td><td>+3</td><td>+3</td><td class="special">Warp-Step Strike, Evasion</td></tr>
+                <tr><td>3</td><td>+2</td><td>+1</td><td>+3</td><td>+3</td><td class="special">Fold Space (30 ft)</td></tr>
+                <tr><td>4</td><td>+3</td><td>+1</td><td>+4</td><td>+4</td><td class="special">Bonus Magick Talent, Uncanny Dodge</td></tr>
+                <tr><td>5</td><td>+3</td><td>+1</td><td>+4</td><td>+4</td><td class="special">Dimensional Anchor Aura</td></tr>
+                <tr><td>6</td><td>+4</td><td>+2</td><td>+5</td><td>+5</td><td class="special">Phase Shift (Move through solid matter)</td></tr>
+                <tr><td>7</td><td>+5</td><td>+2</td><td>+5</td><td>+5</td><td class="special">Fold Space (60 ft)</td></tr>
+                <tr><td>8</td><td>+6</td><td>+2</td><td>+6</td><td>+6</td><td class="special">Improved Warp-Step</td></tr>
+                <tr><td>9</td><td>+6</td><td>+3</td><td>+6</td><td>+6</td><td class="special">Mass Spatial Tear</td></tr>
+                <tr><td>10</td><td>+7</td><td>+3</td><td>+7</td><td>+7</td><td class="special">Time-Slip (1/day)</td></tr>
+                <tr><td>11</td><td>+8</td><td>+3</td><td>+7</td><td>+7</td><td class="special">Fold Space (120 ft)</td></tr>
+                <tr><td>12</td><td>+9</td><td>+4</td><td>+8</td><td>+8</td><td class="special">Greater Evasion</td></tr>
+                <tr><td>13</td><td>+9</td><td>+4</td><td>+8</td><td>+8</td><td class="special">Wormhole Creation</td></tr>
+                <tr><td>14</td><td>+10</td><td>+4</td><td>+9</td><td>+9</td><td class="special">Bonus Magick Talent</td></tr>
+                <tr><td>15</td><td>+11</td><td>+5</td><td>+9</td><td>+9</td><td class="special">Void-Mantle (Immunity to Force)</td></tr>
+                <tr><td>16</td><td>+12</td><td>+5</td><td>+10</td><td>+10</td><td class="special">Phase Shift (At Will)</td></tr>
+                <tr><td>17</td><td>+12</td><td>+5</td><td>+10</td><td>+10</td><td class="special">Fold Space (1 Mile)</td></tr>
+                <tr><td>18</td><td>+13</td><td>+6</td><td>+11</td><td>+11</td><td class="special">Time-Slip (3/day)</td></tr>
+                <tr><td>19</td><td>+14</td><td>+6</td><td>+11</td><td>+11</td><td class="special">Mass Wormhole</td></tr>
+                <tr><td>20</td><td>+15</td><td>+6</td><td>+12</td><td>+12</td><td class="special">Avatar of the Void (Immune to spatial locks, freely teleport)</td></tr>
+            </table>
+            <div class="ability-list">
+                <h2>Class Features</h2>
+                <div class="ability-item"><span class="ability-name">Spatial Tear</span><br> As a standard action, tear a rift in space up to the indicated distance. You can teleport yourself and up to one willing creature. Does not provoke attacks of opportunity.</div>
+                <div class="ability-item"><span class="ability-name">Void-Sight</span><br> By tapping into the core essence of the Fleet-Weaver, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Warp-Step Strike</span><br> Whenever you teleport, your next melee or ranged attack before the end of your turn gains a +4 circumstance bonus to attack and damage.</div>
+                <div class="ability-item"><span class="ability-name">Evasion</span><br> If you make a successful Reflex saving throw against an attack that normally deals half damage on a successful save, you instead take no damage.</div>
+                <div class="ability-item"><span class="ability-name">Fold Space</span><br> Fold the fabric of reality. You can instantly move between two points within range as a move action. If used to bypass a solid object, you must succeed on a Will save (DC 15 + 1 per 5 ft of thickness).</div>
+                <div class="ability-item"><span class="ability-name">Bonus Magick Talent</span><br> You gain a bonus feat or Magick Talent from your approved class list.</div>
+                <div class="ability-item"><span class="ability-name">Uncanny Dodge</span><br> You retain your Dexterity bonus to AC (if any) even if you are caught flat-footed or struck by an invisible attacker.</div>
+                <div class="ability-item"><span class="ability-name">Dimensional Anchor Aura</span><br> You emit a 30 ft aura that prevents any teleportation or extraplanar travel from enemies unless they succeed on a Will save (DC 10 + 1/2 your level + Int modifier).</div>
+                <div class="ability-item"><span class="ability-name">Phase Shift</span><br> As a swift action, become incorporeal until the end of your turn. You can move through solid matter, but take 1d6 force damage per 5 ft if you end your turn inside an object.</div>
+                <div class="ability-item"><span class="ability-name">Improved Warp-Step</span><br> Your proficiency with your class abilities reaches a new peak. The DCs of all your Fleet-Weaver abilities increase by +2, and you gain a +2 bonus to your primary saving throw.</div>
+                <div class="ability-item"><span class="ability-name">Mass Spatial Tear</span><br> As a standard action, tear a rift in space up to the indicated distance. You can teleport yourself and up to one willing creature. Does not provoke attacks of opportunity.</div>
+                <div class="ability-item"><span class="ability-name">Time-Slip</span><br> Step outside of time for 1 round (as the Time Stop spell).</div>
+                <div class="ability-item"><span class="ability-name">Greater Evasion</span><br> If you make a successful Reflex saving throw against an attack that normally deals half damage on a successful save, you instead take no damage.</div>
+                <div class="ability-item"><span class="ability-name">Wormhole Creation</span><br> By tapping into the core essence of the Fleet-Weaver, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Void-Mantle</span><br> By tapping into the core essence of the Fleet-Weaver, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Mass Wormhole</span><br> By tapping into the core essence of the Fleet-Weaver, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Avatar of the Void (Immune to spatial locks</span><br> By tapping into the core essence of the Fleet-Weaver, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">freely teleport)</span><br> As a move action, you can instantly transport yourself to any unoccupied space you can see within 30 feet. This movement bypasses physical barriers and does not provoke attacks of opportunity.</div>
+            </div>
+        </div>
+        <div id="null-zone-enforcer" class="class-section">
+            <h1>Null-Zone Enforcer</h1>
+            <div class="desc">Heavy shock troopers infused with anti-magic properties. They excel at shutting down enemy casters and breaking through shielded fortifications.</div>
+            <table>
+                <tr><th>Level</th><th>BAB</th><th>Fort</th><th>Ref</th><th>Will</th><th>Special</th></tr>
+                <tr><td>1</td><td>+1</td><td>+2</td><td>+0</td><td>+2</td><td class="special">Null-Aura (10 ft), Heavy Armor Mastery</td></tr>
+                <tr><td>2</td><td>+2</td><td>+3</td><td>+0</td><td>+3</td><td class="special">Spell-Shatter Strike</td></tr>
+                <tr><td>3</td><td>+3</td><td>+3</td><td>+1</td><td>+3</td><td class="special">Mage-Killer's Resolve (SR 10 + Level)</td></tr>
+                <tr><td>4</td><td>+4</td><td>+4</td><td>+1</td><td>+4</td><td class="special">Bonus Combat Feat</td></tr>
+                <tr><td>5</td><td>+5</td><td>+4</td><td>+1</td><td>+4</td><td class="special">Null-Aura (20 ft)</td></tr>
+                <tr><td>6</td><td>+6</td><td>+5</td><td>+2</td><td>+5</td><td class="special">Dispelling Cleave</td></tr>
+                <tr><td>7</td><td>+7</td><td>+5</td><td>+2</td><td>+5</td><td class="special">Mage-Killer's Resolve (SR 15 + Level)</td></tr>
+                <tr><td>8</td><td>+8</td><td>+6</td><td>+2</td><td>+6</td><td class="special">Bonus Combat Feat</td></tr>
+                <tr><td>9</td><td>+9</td><td>+6</td><td>+3</td><td>+6</td><td class="special">Null-Aura (30 ft), Anti-Magic Field (1/day)</td></tr>
+                <tr><td>10</td><td>+10</td><td>+7</td><td>+3</td><td>+7</td><td class="special">Spell-Reflection (1/day)</td></tr>
+                <tr><td>11</td><td>+11</td><td>+7</td><td>+3</td><td>+7</td><td class="special">Sever the Weave (Target loses spell slots)</td></tr>
+                <tr><td>12</td><td>+12</td><td>+8</td><td>+4</td><td>+8</td><td class="special">Bonus Combat Feat</td></tr>
+                <tr><td>13</td><td>+13</td><td>+8</td><td>+4</td><td>+8</td><td class="special">Anti-Magic Field (2/day)</td></tr>
+                <tr><td>14</td><td>+14</td><td>+9</td><td>+4</td><td>+9</td><td class="special">Spell-Reflection (3/day)</td></tr>
+                <tr><td>15</td><td>+15</td><td>+9</td><td>+5</td><td>+9</td><td class="special">Null-Aura (60 ft)</td></tr>
+                <tr><td>16</td><td>+16</td><td>+10</td><td>+5</td><td>+10</td><td class="special">Bonus Combat Feat</td></tr>
+                <tr><td>17</td><td>+17</td><td>+10</td><td>+5</td><td>+10</td><td class="special">Anti-Magic Field (3/day)</td></tr>
+                <tr><td>18</td><td>+18</td><td>+11</td><td>+6</td><td>+11</td><td class="special">Sever the Weave (Area of Effect)</td></tr>
+                <tr><td>19</td><td>+19</td><td>+11</td><td>+6</td><td>+11</td><td class="special">Absolute Null (Aura completely negates all magic within 15 ft)</td></tr>
+                <tr><td>20</td><td>+20</td><td>+12</td><td>+6</td><td>+12</td><td class="special">The Void Incarnate (Immune to all targeted spells, SR 30 + Level)</td></tr>
+            </table>
+            <div class="ability-list">
+                <h2>Class Features</h2>
+                <div class="ability-item"><span class="ability-name">Null-Aura</span><br> You emit a 30-foot radius aura of power. Enemies entering or starting their turn in this area take a -2 penalty to attack rolls, AC, and saving throws while inside.</div>
+                <div class="ability-item"><span class="ability-name">Heavy Armor Mastery</span><br> Your proficiency with your class abilities reaches a new peak. The DCs of all your Null-Zone Enforcer abilities increase by +2, and you gain a +2 bonus to your primary saving throw.</div>
+                <div class="ability-item"><span class="ability-name">Spell-Shatter Strike</span><br> You channel the unique power of the Null-Zone Enforcer into a devastating attack. As a standard action, make a single attack. If it hits, it deals an additional 3d6 damage and the target must make a Fortitude save (DC 10 + 1/2 your level + primary modifier) or be staggered for 1 round.</div>
+                <div class="ability-item"><span class="ability-name">Mage-Killer's Resolve</span><br> By tapping into the core essence of the Null-Zone Enforcer, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Bonus Combat Feat</span><br> By tapping into the core essence of the Null-Zone Enforcer, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Dispelling Cleave</span><br> You sever the connection between a target and the Magick weave. Target one creature or effect within 60 ft; they are subjected to a targeted Greater Dispel Magic (using your class level as caster level), and take 1d6 damage per spell level dispelled.</div>
+                <div class="ability-item"><span class="ability-name">Anti-Magic Field</span><br> You emit a 30-foot radius aura of power. Enemies entering or starting their turn in this area take a -2 penalty to attack rolls, AC, and saving throws while inside.</div>
+                <div class="ability-item"><span class="ability-name">Spell-Reflection</span><br> By tapping into the core essence of the Null-Zone Enforcer, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Sever the Weave</span><br> You sever the connection between a target and the Magick weave. Target one creature or effect within 60 ft; they are subjected to a targeted Greater Dispel Magic (using your class level as caster level), and take 1d6 damage per spell level dispelled.</div>
+                <div class="ability-item"><span class="ability-name">Absolute Null</span><br> You sever the connection between a target and the Magick weave. Target one creature or effect within 60 ft; they are subjected to a targeted Greater Dispel Magic (using your class level as caster level), and take 1d6 damage per spell level dispelled.</div>
+                <div class="ability-item"><span class="ability-name">The Void Incarnate (Immune to all targeted spells</span><br> By tapping into the core essence of the Null-Zone Enforcer, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">SR 30 + Level)</span><br> By tapping into the core essence of the Null-Zone Enforcer, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+            </div>
+        </div>
+        <div id="chronal-warp-sniper" class="class-section">
+            <h1>Chronal-Warp Sniper</h1>
+            <div class="desc">Master marksmen who use chronomancy to calculate impossible trajectories, accelerating their bullets through time to strike before the trigger is even pulled.</div>
+            <table>
+                <tr><th>Level</th><th>BAB</th><th>Fort</th><th>Ref</th><th>Will</th><th>Special</th></tr>
+                <tr><td>1</td><td>+1</td><td>+0</td><td>+2</td><td>+0</td><td class="special">Chronal Targeting (+2 to Hit), Firearm Proficiency</td></tr>
+                <tr><td>2</td><td>+2</td><td>+0</td><td>+3</td><td>+0</td><td class="special">Ricochet Time-Skip (Ignore Cover)</td></tr>
+                <tr><td>3</td><td>+3</td><td>+1</td><td>+3</td><td>+1</td><td class="special">Accelerated Action (Extra Attack)</td></tr>
+                <tr><td>4</td><td>+4</td><td>+1</td><td>+4</td><td>+1</td><td class="special">Bonus Marksman Feat</td></tr>
+                <tr><td>5</td><td>+5</td><td>+1</td><td>+4</td><td>+1</td><td class="special">Pre-Cognitive Dodge (Int to AC)</td></tr>
+                <tr><td>6</td><td>+6</td><td>+2</td><td>+5</td><td>+2</td><td class="special">Ricochet Time-Skip (Ignore Total Cover)</td></tr>
+                <tr><td>7</td><td>+7</td><td>+2</td><td>+5</td><td>+2</td><td class="special">Time-Stop Shot (1/day)</td></tr>
+                <tr><td>8</td><td>+8</td><td>+2</td><td>+6</td><td>+2</td><td class="special">Bonus Marksman Feat</td></tr>
+                <tr><td>9</td><td>+9</td><td>+3</td><td>+6</td><td>+3</td><td class="special">Accelerated Action (Two Extra Attacks)</td></tr>
+                <tr><td>10</td><td>+10</td><td>+3</td><td>+7</td><td>+3</td><td class="special">Pre-Emptive Strike (Interrupt enemy turn)</td></tr>
+                <tr><td>11</td><td>+11</td><td>+3</td><td>+7</td><td>+3</td><td class="special">Chronal Targeting (+4 to Hit)</td></tr>
+                <tr><td>12</td><td>+12</td><td>+4</td><td>+8</td><td>+4</td><td class="special">Bonus Marksman Feat</td></tr>
+                <tr><td>13</td><td>+13</td><td>+4</td><td>+8</td><td>+4</td><td class="special">Time-Stop Shot (2/day)</td></tr>
+                <tr><td>14</td><td>+14</td><td>+4</td><td>+9</td><td>+4</td><td class="special">Pre-Emptive Strike (2/encounter)</td></tr>
+                <tr><td>15</td><td>+15</td><td>+5</td><td>+9</td><td>+5</td><td class="special">Accelerated Action (Haste self at-will)</td></tr>
+                <tr><td>16</td><td>+16</td><td>+5</td><td>+10</td><td>+5</td><td class="special">Bonus Marksman Feat</td></tr>
+                <tr><td>17</td><td>+17</td><td>+5</td><td>+10</td><td>+5</td><td class="special">Time-Stop Shot (3/day)</td></tr>
+                <tr><td>18</td><td>+18</td><td>+6</td><td>+11</td><td>+6</td><td class="special">Paradox Bullet (Erases target from the last round)</td></tr>
+                <tr><td>19</td><td>+19</td><td>+6</td><td>+11</td><td>+6</td><td class="special">Chronal Targeting (+6 to Hit, Ignore Concealment)</td></tr>
+                <tr><td>20</td><td>+20</td><td>+6</td><td>+12</td><td>+6</td><td class="special">Master of the Final Second (Every critical hit casts Time Stop)</td></tr>
+            </table>
+            <div class="ability-list">
+                <h2>Class Features</h2>
+                <div class="ability-item"><span class="ability-name">Chronal Targeting</span><br> You twist the flow of time around yourself. As a swift action, you can force a reroll of any attack, save, or skill check made by you or a creature within 30 feet. You must accept the second result.</div>
+                <div class="ability-item"><span class="ability-name">Firearm Proficiency</span><br> By tapping into the core essence of the Chronal-Warp Sniper, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Ricochet Time-Skip</span><br> You twist the flow of time around yourself. As a swift action, you can force a reroll of any attack, save, or skill check made by you or a creature within 30 feet. You must accept the second result.</div>
+                <div class="ability-item"><span class="ability-name">Accelerated Action</span><br> By tapping into the core essence of the Chronal-Warp Sniper, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Bonus Marksman Feat</span><br> By tapping into the core essence of the Chronal-Warp Sniper, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Pre-Cognitive Dodge</span><br> By tapping into the core essence of the Chronal-Warp Sniper, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Time-Stop Shot</span><br> You channel the unique power of the Chronal-Warp Sniper into a devastating attack. As a standard action, make a single attack. If it hits, it deals an additional 3d6 damage and the target must make a Fortitude save (DC 10 + 1/2 your level + primary modifier) or be staggered for 1 round.</div>
+                <div class="ability-item"><span class="ability-name">Pre-Emptive Strike</span><br> You channel the unique power of the Chronal-Warp Sniper into a devastating attack. As a standard action, make a single attack. If it hits, it deals an additional 3d6 damage and the target must make a Fortitude save (DC 10 + 1/2 your level + primary modifier) or be staggered for 1 round.</div>
+                <div class="ability-item"><span class="ability-name">Paradox Bullet</span><br> You twist the flow of time around yourself. As a swift action, you can force a reroll of any attack, save, or skill check made by you or a creature within 30 feet. You must accept the second result.</div>
+                <div class="ability-item"><span class="ability-name">Chronal Targeting (+6 to Hit</span><br> You twist the flow of time around yourself. As a swift action, you can force a reroll of any attack, save, or skill check made by you or a creature within 30 feet. You must accept the second result.</div>
+                <div class="ability-item"><span class="ability-name">Ignore Concealment)</span><br> By tapping into the core essence of the Chronal-Warp Sniper, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Master of the Final Second</span><br> By tapping into the core essence of the Chronal-Warp Sniper, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+            </div>
+        </div>
+        <div id="abyssal-boarder" class="class-section">
+            <h1>Abyssal Boarder</h1>
+            <div class="desc">Fearsome melee specialists infused with abyssal energies. They thrive in the chaotic environments of ship-to-ship boarding actions.</div>
+            <table>
+                <tr><th>Level</th><th>BAB</th><th>Fort</th><th>Ref</th><th>Will</th><th>Special</th></tr>
+                <tr><td>1</td><td>+1</td><td>+2</td><td>+0</td><td>+0</td><td class="special">Abyssal Rage (+4 Str/Con), Boarding Axe Mastery</td></tr>
+                <tr><td>2</td><td>+2</td><td>+3</td><td>+0</td><td>+0</td><td class="special">Hull-Breaker (Double damage to objects)</td></tr>
+                <tr><td>3</td><td>+3</td><td>+3</td><td>+1</td><td>+1</td><td class="special">Frightful Presence (30 ft)</td></tr>
+                <tr><td>4</td><td>+4</td><td>+4</td><td>+1</td><td>+1</td><td class="special">Bonus Combat Feat</td></tr>
+                <tr><td>5</td><td>+5</td><td>+4</td><td>+1</td><td>+1</td><td class="special">Abyssal Rage (+6 Str/Con)</td></tr>
+                <tr><td>6</td><td>+6</td><td>+5</td><td>+2</td><td>+2</td><td class="special">Blood in the Water (Scent, +2 Attack vs bleeding targets)</td></tr>
+                <tr><td>7</td><td>+7</td><td>+5</td><td>+2</td><td>+2</td><td class="special">Demon-Skin (DR 5/Good)</td></tr>
+                <tr><td>8</td><td>+8</td><td>+6</td><td>+2</td><td>+2</td><td class="special">Bonus Combat Feat</td></tr>
+                <tr><td>9</td><td>+9</td><td>+6</td><td>+3</td><td>+3</td><td class="special">Abyssal Rage (+8 Str/Con), Frightful Presence (60 ft)</td></tr>
+                <tr><td>10</td><td>+10</td><td>+7</td><td>+3</td><td>+3</td><td class="special">Hull-Breaker (Ignore Hardness)</td></tr>
+                <tr><td>11</td><td>+11</td><td>+7</td><td>+3</td><td>+3</td><td class="special">Abyssal Leap (Teleport to bleeding target)</td></tr>
+                <tr><td>12</td><td>+12</td><td>+8</td><td>+4</td><td>+4</td><td class="special">Bonus Combat Feat</td></tr>
+                <tr><td>13</td><td>+13</td><td>+8</td><td>+4</td><td>+4</td><td class="special">Demon-Skin (DR 10/Good)</td></tr>
+                <tr><td>14</td><td>+14</td><td>+9</td><td>+4</td><td>+4</td><td class="special">Frightful Presence (Panic instead of Shaken)</td></tr>
+                <tr><td>15</td><td>+15</td><td>+9</td><td>+5</td><td>+5</td><td class="special">Abyssal Rage (+10 Str/Con)</td></tr>
+                <tr><td>16</td><td>+16</td><td>+10</td><td>+5</td><td>+5</td><td class="special">Bonus Combat Feat</td></tr>
+                <tr><td>17</td><td>+17</td><td>+10</td><td>+5</td><td>+5</td><td class="special">Abyssal Leap (At-Will)</td></tr>
+                <tr><td>18</td><td>+18</td><td>+11</td><td>+6</td><td>+6</td><td class="special">Demon-Skin (DR 15/Good)</td></tr>
+                <tr><td>19</td><td>+19</td><td>+11</td><td>+6</td><td>+6</td><td class="special">Unstoppable Boarder (Immune to Death Effects)</td></tr>
+                <tr><td>20</td><td>+20</td><td>+12</td><td>+6</td><td>+6</td><td class="special">Abyssal Leviathan (Become Gargantuan during Rage, DR 20/-)</td></tr>
+            </table>
+            <div class="ability-list">
+                <h2>Class Features</h2>
+                <div class="ability-item"><span class="ability-name">Abyssal Rage</span><br> By tapping into the core essence of the Abyssal Boarder, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Boarding Axe Mastery</span><br> Your proficiency with your class abilities reaches a new peak. The DCs of all your Abyssal Boarder abilities increase by +2, and you gain a +2 bonus to your primary saving throw.</div>
+                <div class="ability-item"><span class="ability-name">Hull-Breaker</span><br> By tapping into the core essence of the Abyssal Boarder, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Frightful Presence</span><br> By tapping into the core essence of the Abyssal Boarder, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Bonus Combat Feat</span><br> By tapping into the core essence of the Abyssal Boarder, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Blood in the Water (Scent</span><br> By tapping into the core essence of the Abyssal Boarder, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">+2 Attack vs bleeding targets)</span><br> You channel the unique power of the Abyssal Boarder into a devastating attack. As a standard action, make a single attack. If it hits, it deals an additional 3d6 damage and the target must make a Fortitude save (DC 10 + 1/2 your level + primary modifier) or be staggered for 1 round.</div>
+                <div class="ability-item"><span class="ability-name">Demon-Skin</span><br> By tapping into the core essence of the Abyssal Boarder, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Abyssal Leap</span><br> By tapping into the core essence of the Abyssal Boarder, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Unstoppable Boarder</span><br> By tapping into the core essence of the Abyssal Boarder, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Abyssal Leviathan (Become Gargantuan during Rage</span><br> By tapping into the core essence of the Abyssal Boarder, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">DR 20/-)</span><br> By tapping into the core essence of the Abyssal Boarder, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+            </div>
+        </div>
+        <div id="symbiotic-hull-mender" class="class-section">
+            <h1>Symbiotic Hull-Mender</h1>
+            <div class="desc">Techno-organic specialists who bond with their ships. They heal vessels and crew alike using bio-magickal symbiosis.</div>
+            <table>
+                <tr><th>Level</th><th>BAB</th><th>Fort</th><th>Ref</th><th>Will</th><th>Special</th></tr>
+                <tr><td>1</td><td>+0</td><td>+2</td><td>+0</td><td>+2</td><td class="special">Symbiotic Link (Ship & Self), Bio-Healing (1d6)</td></tr>
+                <tr><td>2</td><td>+1</td><td>+3</td><td>+0</td><td>+3</td><td class="special">Organic Armor (+2 Natural AC)</td></tr>
+                <tr><td>3</td><td>+2</td><td>+3</td><td>+1</td><td>+3</td><td class="special">Bio-Healing (2d6)</td></tr>
+                <tr><td>4</td><td>+3</td><td>+4</td><td>+1</td><td>+4</td><td class="special">Bonus Support Feat</td></tr>
+                <tr><td>5</td><td>+3</td><td>+4</td><td>+1</td><td>+4</td><td class="special">Symbiotic Link (1 Ally), Bio-Healing (3d6)</td></tr>
+                <tr><td>6</td><td>+4</td><td>+5</td><td>+2</td><td>+5</td><td class="special">Organic Armor (+4 Natural AC)</td></tr>
+                <tr><td>7</td><td>+5</td><td>+5</td><td>+2</td><td>+5</td><td class="special">Hull-Mend (Repair ship damage rapidly), Bio-Healing (4d6)</td></tr>
+                <tr><td>8</td><td>+6</td><td>+6</td><td>+2</td><td>+6</td><td class="special">Bonus Support Feat</td></tr>
+                <tr><td>9</td><td>+6</td><td>+6</td><td>+3</td><td>+6</td><td class="special">Bio-Healing (5d6)</td></tr>
+                <tr><td>10</td><td>+7</td><td>+7</td><td>+3</td><td>+7</td><td class="special">Symbiotic Link (3 Allies), Resurrective Spores (1/week)</td></tr>
+                <tr><td>11</td><td>+8</td><td>+7</td><td>+3</td><td>+7</td><td class="special">Bio-Healing (6d6), Organic Armor (+6 Natural AC)</td></tr>
+                <tr><td>12</td><td>+9</td><td>+8</td><td>+4</td><td>+8</td><td class="special">Bonus Support Feat</td></tr>
+                <tr><td>13</td><td>+9</td><td>+8</td><td>+4</td><td>+8</td><td class="special">Bio-Healing (7d6)</td></tr>
+                <tr><td>14</td><td>+10</td><td>+9</td><td>+4</td><td>+9</td><td class="special">Hull-Mend (Instantly repair catastrophic damage 1/day)</td></tr>
+                <tr><td>15</td><td>+11</td><td>+9</td><td>+5</td><td>+9</td><td class="special">Symbiotic Link (All Allies within 100ft), Bio-Healing (8d6)</td></tr>
+                <tr><td>16</td><td>+12</td><td>+10</td><td>+5</td><td>+10</td><td class="special">Bonus Support Feat</td></tr>
+                <tr><td>17</td><td>+12</td><td>+10</td><td>+5</td><td>+10</td><td class="special">Bio-Healing (9d6)</td></tr>
+                <tr><td>18</td><td>+13</td><td>+11</td><td>+6</td><td>+11</td><td class="special">Resurrective Spores (1/day)</td></tr>
+                <tr><td>19</td><td>+14</td><td>+11</td><td>+6</td><td>+11</td><td class="special">Bio-Healing (10d6), Organic Armor (+8 Natural AC)</td></tr>
+                <tr><td>20</td><td>+15</td><td>+12</td><td>+6</td><td>+12</td><td class="special">Living Fleet (Merge with a ship entirely, becoming a dreadnought)</td></tr>
+            </table>
+            <div class="ability-list">
+                <h2>Class Features</h2>
+                <div class="ability-item"><span class="ability-name">Symbiotic Link</span><br> You manipulate biological matter with terrifying efficiency. As a standard action, you can heal a touched creature for 3d8 + your level hit points, or deal the same amount of damage to an enemy (Fortitude save halves). You can also use this to repair the organic components of bio-ships.</div>
+                <div class="ability-item"><span class="ability-name">Bio-Healing</span><br> You manipulate biological matter with terrifying efficiency. As a standard action, you can heal a touched creature for 3d8 + your level hit points, or deal the same amount of damage to an enemy (Fortitude save halves). You can also use this to repair the organic components of bio-ships.</div>
+                <div class="ability-item"><span class="ability-name">Organic Armor</span><br> As an immediate action, you can manifest a protective barrier of energy or flesh. You gain a +4 deflection bonus to AC and Damage Reduction 5/- until the start of your next turn.</div>
+                <div class="ability-item"><span class="ability-name">Bonus Support Feat</span><br> By tapping into the core essence of the Symbiotic Hull-Mender, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Hull-Mend</span><br> By tapping into the core essence of the Symbiotic Hull-Mender, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Resurrective Spores</span><br> By tapping into the core essence of the Symbiotic Hull-Mender, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Living Fleet (Merge with a ship entirely</span><br> By tapping into the core essence of the Symbiotic Hull-Mender, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">becoming a dreadnought)</span><br> By tapping into the core essence of the Symbiotic Hull-Mender, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+            </div>
+        </div>
+        <div id="sutures-abomination" class="class-section">
+            <h1>Suture's Abomination</h1>
+            <div class="desc">A horrifying amalgamation of stitched flesh and forbidden Pink Lab sciences. Highly resilient and adaptable in combat.</div>
+            <table>
+                <tr><th>Level</th><th>BAB</th><th>Fort</th><th>Ref</th><th>Will</th><th>Special</th></tr>
+                <tr><td>1</td><td>+1</td><td>+2</td><td>+0</td><td>+0</td><td class="special">Flesh-Knit (Fast Healing 2), Unnatural Strikes (1d6)</td></tr>
+                <tr><td>2</td><td>+2</td><td>+3</td><td>+0</td><td>+0</td><td class="special">Graft: Rending Claws</td></tr>
+                <tr><td>3</td><td>+3</td><td>+3</td><td>+1</td><td>+1</td><td class="special">Flesh-Knit (Fast Healing 4)</td></tr>
+                <tr><td>4</td><td>+4</td><td>+4</td><td>+1</td><td>+1</td><td class="special">Bonus Mutation</td></tr>
+                <tr><td>5</td><td>+5</td><td>+4</td><td>+1</td><td>+1</td><td class="special">Unnatural Strikes (1d8), Graft: Acidic Spit</td></tr>
+                <tr><td>6</td><td>+6</td><td>+5</td><td>+2</td><td>+2</td><td class="special">Flesh-Knit (Fast Healing 6)</td></tr>
+                <tr><td>7</td><td>+7</td><td>+5</td><td>+2</td><td>+2</td><td class="special">Graft: Hardened Carapace (DR 5/-)</td></tr>
+                <tr><td>8</td><td>+8</td><td>+6</td><td>+2</td><td>+2</td><td class="special">Bonus Mutation</td></tr>
+                <tr><td>9</td><td>+9</td><td>+6</td><td>+3</td><td>+3</td><td class="special">Flesh-Knit (Fast Healing 8), Unnatural Strikes (2d6)</td></tr>
+                <tr><td>10</td><td>+10</td><td>+7</td><td>+3</td><td>+3</td><td class="special">Graft: Second Heart (Immune to Crits)</td></tr>
+                <tr><td>11</td><td>+11</td><td>+7</td><td>+3</td><td>+3</td><td class="special">Flesh-Knit (Fast Healing 10)</td></tr>
+                <tr><td>12</td><td>+12</td><td>+8</td><td>+4</td><td>+4</td><td class="special">Bonus Mutation</td></tr>
+                <tr><td>13</td><td>+13</td><td>+8</td><td>+4</td><td>+4</td><td class="special">Graft: Vestigial Wings (Flight)</td></tr>
+                <tr><td>14</td><td>+14</td><td>+9</td><td>+4</td><td>+4</td><td class="special">Unnatural Strikes (3d6)</td></tr>
+                <tr><td>15</td><td>+15</td><td>+9</td><td>+5</td><td>+5</td><td class="special">Flesh-Knit (Fast Healing 15)</td></tr>
+                <tr><td>16</td><td>+16</td><td>+10</td><td>+5</td><td>+5</td><td class="special">Bonus Mutation</td></tr>
+                <tr><td>17</td><td>+17</td><td>+10</td><td>+5</td><td>+5</td><td class="special">Graft: Redundant Organs (Immune to Sneak Attack/Death Effects)</td></tr>
+                <tr><td>18</td><td>+18</td><td>+11</td><td>+6</td><td>+6</td><td class="special">Flesh-Knit (Fast Healing 20)</td></tr>
+                <tr><td>19</td><td>+19</td><td>+11</td><td>+6</td><td>+6</td><td class="special">Unnatural Strikes (4d6)</td></tr>
+                <tr><td>20</td><td>+20</td><td>+12</td><td>+6</td><td>+6</td><td class="special">Immortal Abomination (Cannot be permanently killed unless burned to ash)</td></tr>
+            </table>
+            <div class="ability-list">
+                <h2>Class Features</h2>
+                <div class="ability-item"><span class="ability-name">Flesh-Knit</span><br> You manipulate biological matter with terrifying efficiency. As a standard action, you can heal a touched creature for 3d8 + your level hit points, or deal the same amount of damage to an enemy (Fortitude save halves). You can also use this to repair the organic components of bio-ships.</div>
+                <div class="ability-item"><span class="ability-name">Unnatural Strikes</span><br> You channel the unique power of the Suture's Abomination into a devastating attack. As a standard action, make a single attack. If it hits, it deals an additional 3d6 damage and the target must make a Fortitude save (DC 10 + 1/2 your level + primary modifier) or be staggered for 1 round.</div>
+                <div class="ability-item"><span class="ability-name">Graft: Rending Claws</span><br> By tapping into the core essence of the Suture's Abomination, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Bonus Mutation</span><br> By tapping into the core essence of the Suture's Abomination, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Graft: Acidic Spit</span><br> By tapping into the core essence of the Suture's Abomination, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Graft: Hardened Carapace</span><br> By tapping into the core essence of the Suture's Abomination, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Graft: Second Heart</span><br> By tapping into the core essence of the Suture's Abomination, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Graft: Vestigial Wings</span><br> By tapping into the core essence of the Suture's Abomination, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Graft: Redundant Organs</span><br> By tapping into the core essence of the Suture's Abomination, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Immortal Abomination</span><br> You manipulate biological matter with terrifying efficiency. As a standard action, you can heal a touched creature for 3d8 + your level hit points, or deal the same amount of damage to an enemy (Fortitude save halves). You can also use this to repair the organic components of bio-ships.</div>
+            </div>
+        </div>
+        <div id="biomantic-flesh-grafter" class="class-section">
+            <h1>Biomantic Flesh-Grafter</h1>
+            <div class="desc">A dark surgeon from the Pink Lab who enhances allies (and themselves) with grotesque but highly effective flesh grafts and biomagick.</div>
+            <table>
+                <tr><th>Level</th><th>BAB</th><th>Fort</th><th>Ref</th><th>Will</th><th>Special</th></tr>
+                <tr><td>1</td><td>+0</td><td>+2</td><td>+0</td><td>+2</td><td class="special">Biomancy Spells, Flesh-Graft: Ally (+2 Str)</td></tr>
+                <tr><td>2</td><td>+1</td><td>+3</td><td>+0</td><td>+3</td><td class="special">Surgical Precision (Sneak Attack +1d6)</td></tr>
+                <tr><td>3</td><td>+2</td><td>+3</td><td>+1</td><td>+3</td><td class="special">Flesh-Graft: Ally (Darkvision/Scent)</td></tr>
+                <tr><td>4</td><td>+3</td><td>+4</td><td>+1</td><td>+4</td><td class="special">Bonus Biomantic Feat</td></tr>
+                <tr><td>5</td><td>+3</td><td>+4</td><td>+1</td><td>+4</td><td class="special">Surgical Precision (Sneak Attack +2d6), Flesh-Graft: Ally (+2 Con)</td></tr>
+                <tr><td>6</td><td>+4</td><td>+5</td><td>+2</td><td>+5</td><td class="special">Mutagenic Serum (Self buff)</td></tr>
+                <tr><td>7</td><td>+5</td><td>+5</td><td>+2</td><td>+5</td><td class="special">Flesh-Graft: Ally (Natural Armor +2)</td></tr>
+                <tr><td>8</td><td>+6</td><td>+6</td><td>+2</td><td>+6</td><td class="special">Bonus Biomantic Feat</td></tr>
+                <tr><td>9</td><td>+6</td><td>+6</td><td>+3</td><td>+6</td><td class="special">Surgical Precision (Sneak Attack +3d6), Flesh-Graft: Ally (+4 Str/Con)</td></tr>
+                <tr><td>10</td><td>+7</td><td>+7</td><td>+3</td><td>+7</td><td class="special">Macabre Resurrection (Revive ally as undead/construct hybrid)</td></tr>
+                <tr><td>11</td><td>+8</td><td>+7</td><td>+3</td><td>+7</td><td class="special">Flesh-Graft: Ally (Wings/Flight)</td></tr>
+                <tr><td>12</td><td>+9</td><td>+8</td><td>+4</td><td>+8</td><td class="special">Bonus Biomantic Feat</td></tr>
+                <tr><td>13</td><td>+9</td><td>+8</td><td>+4</td><td>+8</td><td class="special">Surgical Precision (Sneak Attack +4d6)</td></tr>
+                <tr><td>14</td><td>+10</td><td>+9</td><td>+4</td><td>+9</td><td class="special">Mutagenic Serum (Greater)</td></tr>
+                <tr><td>15</td><td>+11</td><td>+9</td><td>+5</td><td>+9</td><td class="special">Flesh-Graft: Ally (+6 Str/Con)</td></tr>
+                <tr><td>16</td><td>+12</td><td>+10</td><td>+5</td><td>+10</td><td class="special">Bonus Biomantic Feat</td></tr>
+                <tr><td>17</td><td>+12</td><td>+10</td><td>+5</td><td>+10</td><td class="special">Surgical Precision (Sneak Attack +5d6)</td></tr>
+                <tr><td>18</td><td>+13</td><td>+11</td><td>+6</td><td>+11</td><td class="special">Macabre Resurrection (No penalty to revived ally)</td></tr>
+                <tr><td>19</td><td>+14</td><td>+11</td><td>+6</td><td>+11</td><td class="special">Flesh-Graft: Ally (Regeneration)</td></tr>
+                <tr><td>20</td><td>+15</td><td>+12</td><td>+6</td><td>+12</td><td class="special">Master of Flesh (Can permanently rewrite the DNA/Race of any creature)</td></tr>
+            </table>
+            <div class="ability-list">
+                <h2>Class Features</h2>
+                <div class="ability-item"><span class="ability-name">Biomancy Spells</span><br> You manipulate biological matter with terrifying efficiency. As a standard action, you can heal a touched creature for 3d8 + your level hit points, or deal the same amount of damage to an enemy (Fortitude save halves). You can also use this to repair the organic components of bio-ships.</div>
+                <div class="ability-item"><span class="ability-name">Flesh-Graft: Ally</span><br> You manipulate biological matter with terrifying efficiency. As a standard action, you can heal a touched creature for 3d8 + your level hit points, or deal the same amount of damage to an enemy (Fortitude save halves). You can also use this to repair the organic components of bio-ships.</div>
+                <div class="ability-item"><span class="ability-name">Surgical Precision</span><br> By tapping into the core essence of the Biomantic Flesh-Grafter, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Bonus Biomantic Feat</span><br> You manipulate biological matter with terrifying efficiency. As a standard action, you can heal a touched creature for 3d8 + your level hit points, or deal the same amount of damage to an enemy (Fortitude save halves). You can also use this to repair the organic components of bio-ships.</div>
+                <div class="ability-item"><span class="ability-name">Mutagenic Serum</span><br> By tapping into the core essence of the Biomantic Flesh-Grafter, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Macabre Resurrection</span><br> By tapping into the core essence of the Biomantic Flesh-Grafter, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Master of Flesh</span><br> You manipulate biological matter with terrifying efficiency. As a standard action, you can heal a touched creature for 3d8 + your level hit points, or deal the same amount of damage to an enemy (Fortitude save halves). You can also use this to repair the organic components of bio-ships.</div>
+            </div>
+        </div>
+        <div id="sable-net-phantom" class="class-section">
+            <h1>Sable-Net Phantom</h1>
+            <div class="desc">Elite espionage operatives who use shadow-magick to slip completely undetected through both physical and magical security.</div>
+            <table>
+                <tr><th>Level</th><th>BAB</th><th>Fort</th><th>Ref</th><th>Will</th><th>Special</th></tr>
+                <tr><td>1</td><td>+0</td><td>+0</td><td>+2</td><td>+0</td><td class="special">Shadow-Cloak (Hide in Plain Sight), Sneak Attack +1d6</td></tr>
+                <tr><td>2</td><td>+1</td><td>+0</td><td>+3</td><td>+0</td><td class="special">Evasion, Phantom Step (Ignore difficult terrain)</td></tr>
+                <tr><td>3</td><td>+2</td><td>+1</td><td>+3</td><td>+1</td><td class="special">Sneak Attack +2d6, Shadow-Jump (10 ft)</td></tr>
+                <tr><td>4</td><td>+3</td><td>+1</td><td>+4</td><td>+1</td><td class="special">Bonus Covert Feat</td></tr>
+                <tr><td>5</td><td>+3</td><td>+1</td><td>+4</td><td>+1</td><td class="special">Sneak Attack +3d6, Shadow-Cloak (Invisibility 1/day)</td></tr>
+                <tr><td>6</td><td>+4</td><td>+2</td><td>+5</td><td>+2</td><td class="special">Uncanny Dodge, Phantom Step (Walk on walls)</td></tr>
+                <tr><td>7</td><td>+5</td><td>+2</td><td>+5</td><td>+2</td><td class="special">Sneak Attack +4d6, Shadow-Jump (30 ft)</td></tr>
+                <tr><td>8</td><td>+6</td><td>+2</td><td>+6</td><td>+2</td><td class="special">Bonus Covert Feat</td></tr>
+                <tr><td>9</td><td>+6</td><td>+3</td><td>+6</td><td>+3</td><td class="special">Sneak Attack +5d6, Shadow-Cloak (Greater Invisibility 1/day)</td></tr>
+                <tr><td>10</td><td>+7</td><td>+3</td><td>+7</td><td>+3</td><td class="special">Mind-Blank (Immune to divination/telepathy)</td></tr>
+                <tr><td>11</td><td>+8</td><td>+3</td><td>+7</td><td>+3</td><td class="special">Sneak Attack +6d6, Shadow-Jump (60 ft)</td></tr>
+                <tr><td>12</td><td>+9</td><td>+4</td><td>+8</td><td>+4</td><td class="special">Bonus Covert Feat</td></tr>
+                <tr><td>13</td><td>+9</td><td>+4</td><td>+8</td><td>+4</td><td class="special">Sneak Attack +7d6, Phantom Step (Walk on air)</td></tr>
+                <tr><td>14</td><td>+10</td><td>+4</td><td>+9</td><td>+4</td><td class="special">Shadow-Cloak (Greater Invisibility 3/day)</td></tr>
+                <tr><td>15</td><td>+11</td><td>+5</td><td>+9</td><td>+5</td><td class="special">Sneak Attack +8d6, Shadow-Jump (120 ft)</td></tr>
+                <tr><td>16</td><td>+12</td><td>+5</td><td>+10</td><td>+5</td><td class="special">Bonus Covert Feat</td></tr>
+                <tr><td>17</td><td>+12</td><td>+5</td><td>+10</td><td>+5</td><td class="special">Sneak Attack +9d6, Perfect Mind-Blank</td></tr>
+                <tr><td>18</td><td>+13</td><td>+6</td><td>+11</td><td>+6</td><td class="special">Phantom Step (Phase through walls at-will)</td></tr>
+                <tr><td>19</td><td>+14</td><td>+6</td><td>+11</td><td>+6</td><td class="special">Sneak Attack +10d6, Shadow-Jump (Unlimited)</td></tr>
+                <tr><td>20</td><td>+15</td><td>+6</td><td>+12</td><td>+6</td><td class="special">Ghost of the Net (Can erase oneself from reality's memory entirely)</td></tr>
+            </table>
+            <div class="ability-list">
+                <h2>Class Features</h2>
+                <div class="ability-item"><span class="ability-name">Shadow-Cloak</span><br> By tapping into the core essence of the Sable-Net Phantom, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Sneak Attack +1d6</span><br> You channel the unique power of the Sable-Net Phantom into a devastating attack. As a standard action, make a single attack. If it hits, it deals an additional 3d6 damage and the target must make a Fortitude save (DC 10 + 1/2 your level + primary modifier) or be staggered for 1 round.</div>
+                <div class="ability-item"><span class="ability-name">Evasion</span><br> If you make a successful Reflex saving throw against an attack that normally deals half damage on a successful save, you instead take no damage.</div>
+                <div class="ability-item"><span class="ability-name">Phantom Step</span><br> As a move action, you can instantly transport yourself to any unoccupied space you can see within 30 feet. This movement bypasses physical barriers and does not provoke attacks of opportunity.</div>
+                <div class="ability-item"><span class="ability-name">Sneak Attack +2d6</span><br> You channel the unique power of the Sable-Net Phantom into a devastating attack. As a standard action, make a single attack. If it hits, it deals an additional 3d6 damage and the target must make a Fortitude save (DC 10 + 1/2 your level + primary modifier) or be staggered for 1 round.</div>
+                <div class="ability-item"><span class="ability-name">Shadow-Jump</span><br> By tapping into the core essence of the Sable-Net Phantom, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Bonus Covert Feat</span><br> By tapping into the core essence of the Sable-Net Phantom, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Sneak Attack +3d6</span><br> You channel the unique power of the Sable-Net Phantom into a devastating attack. As a standard action, make a single attack. If it hits, it deals an additional 3d6 damage and the target must make a Fortitude save (DC 10 + 1/2 your level + primary modifier) or be staggered for 1 round.</div>
+                <div class="ability-item"><span class="ability-name">Uncanny Dodge</span><br> You retain your Dexterity bonus to AC (if any) even if you are caught flat-footed or struck by an invisible attacker.</div>
+                <div class="ability-item"><span class="ability-name">Sneak Attack +4d6</span><br> You channel the unique power of the Sable-Net Phantom into a devastating attack. As a standard action, make a single attack. If it hits, it deals an additional 3d6 damage and the target must make a Fortitude save (DC 10 + 1/2 your level + primary modifier) or be staggered for 1 round.</div>
+                <div class="ability-item"><span class="ability-name">Sneak Attack +5d6</span><br> You channel the unique power of the Sable-Net Phantom into a devastating attack. As a standard action, make a single attack. If it hits, it deals an additional 3d6 damage and the target must make a Fortitude save (DC 10 + 1/2 your level + primary modifier) or be staggered for 1 round.</div>
+                <div class="ability-item"><span class="ability-name">Mind-Blank</span><br> You manipulate the minds or magical sensors of your foes. Target one creature within 60 feet. They must succeed on a Will save (DC 10 + 1/2 your level + Int mod) or become confused for 1d4 rounds and forget the events of the last minute.</div>
+                <div class="ability-item"><span class="ability-name">Sneak Attack +6d6</span><br> You channel the unique power of the Sable-Net Phantom into a devastating attack. As a standard action, make a single attack. If it hits, it deals an additional 3d6 damage and the target must make a Fortitude save (DC 10 + 1/2 your level + primary modifier) or be staggered for 1 round.</div>
+                <div class="ability-item"><span class="ability-name">Sneak Attack +7d6</span><br> You channel the unique power of the Sable-Net Phantom into a devastating attack. As a standard action, make a single attack. If it hits, it deals an additional 3d6 damage and the target must make a Fortitude save (DC 10 + 1/2 your level + primary modifier) or be staggered for 1 round.</div>
+                <div class="ability-item"><span class="ability-name">Sneak Attack +8d6</span><br> You channel the unique power of the Sable-Net Phantom into a devastating attack. As a standard action, make a single attack. If it hits, it deals an additional 3d6 damage and the target must make a Fortitude save (DC 10 + 1/2 your level + primary modifier) or be staggered for 1 round.</div>
+                <div class="ability-item"><span class="ability-name">Sneak Attack +9d6</span><br> You channel the unique power of the Sable-Net Phantom into a devastating attack. As a standard action, make a single attack. If it hits, it deals an additional 3d6 damage and the target must make a Fortitude save (DC 10 + 1/2 your level + primary modifier) or be staggered for 1 round.</div>
+                <div class="ability-item"><span class="ability-name">Perfect Mind-Blank</span><br> You manipulate the minds or magical sensors of your foes. Target one creature within 60 feet. They must succeed on a Will save (DC 10 + 1/2 your level + Int mod) or become confused for 1d4 rounds and forget the events of the last minute.</div>
+                <div class="ability-item"><span class="ability-name">Sneak Attack +10d6</span><br> You channel the unique power of the Sable-Net Phantom into a devastating attack. As a standard action, make a single attack. If it hits, it deals an additional 3d6 damage and the target must make a Fortitude save (DC 10 + 1/2 your level + primary modifier) or be staggered for 1 round.</div>
+                <div class="ability-item"><span class="ability-name">Ghost of the Net</span><br> You manipulate the minds or magical sensors of your foes. Target one creature within 60 feet. They must succeed on a Will save (DC 10 + 1/2 your level + Int mod) or become confused for 1d4 rounds and forget the events of the last minute.</div>
+            </div>
+        </div>
+        <div id="memory-siphon-agent" class="class-section">
+            <h1>Memory-Siphon Agent</h1>
+            <div class="desc">Psionic interrogators who rip secrets directly from the minds of their enemies, weaponizing their victims' own trauma against them.</div>
+            <table>
+                <tr><th>Level</th><th>BAB</th><th>Fort</th><th>Ref</th><th>Will</th><th>Special</th></tr>
+                <tr><td>1</td><td>+0</td><td>+0</td><td>+0</td><td>+2</td><td class="special">Psionic Casting, Siphon Memory (Surface Thoughts)</td></tr>
+                <tr><td>2</td><td>+1</td><td>+0</td><td>+0</td><td>+3</td><td class="special">Psychic Backlash (1d6 Int damage on successful save)</td></tr>
+                <tr><td>3</td><td>+2</td><td>+1</td><td>+1</td><td>+3</td><td class="special">Siphon Memory (Deep Secrets)</td></tr>
+                <tr><td>4</td><td>+3</td><td>+1</td><td>+1</td><td>+4</td><td class="special">Bonus Psionic Feat</td></tr>
+                <tr><td>5</td><td>+3</td><td>+1</td><td>+1</td><td>+4</td><td class="special">Trauma-Weave (Implant false memories)</td></tr>
+                <tr><td>6</td><td>+4</td><td>+2</td><td>+2</td><td>+5</td><td class="special">Psychic Backlash (2d6 Int damage)</td></tr>
+                <tr><td>7</td><td>+5</td><td>+2</td><td>+2</td><td>+5</td><td class="special">Siphon Memory (Skill Steal - Use enemy's skill ranks)</td></tr>
+                <tr><td>8</td><td>+6</td><td>+2</td><td>+2</td><td>+6</td><td class="special">Bonus Psionic Feat</td></tr>
+                <tr><td>9</td><td>+6</td><td>+3</td><td>+3</td><td>+6</td><td class="special">Trauma-Weave (Modify Memory at will)</td></tr>
+                <tr><td>10</td><td>+7</td><td>+3</td><td>+3</td><td>+7</td><td class="special">Psychic Backlash (3d6 Int damage)</td></tr>
+                <tr><td>11</td><td>+8</td><td>+3</td><td>+3</td><td>+7</td><td class="special">Siphon Memory (Spell Steal - Cast enemy's spells)</td></tr>
+                <tr><td>12</td><td>+9</td><td>+4</td><td>+4</td><td>+8</td><td class="special">Bonus Psionic Feat</td></tr>
+                <tr><td>13</td><td>+9</td><td>+4</td><td>+4</td><td>+8</td><td class="special">Mind-Shatter (Target is permanently feebleminded on critical fail)</td></tr>
+                <tr><td>14</td><td>+10</td><td>+4</td><td>+4</td><td>+9</td><td class="special">Psychic Backlash (4d6 Int damage)</td></tr>
+                <tr><td>15</td><td>+11</td><td>+5</td><td>+5</td><td>+9</td><td class="special">Trauma-Weave (Mass Modify Memory)</td></tr>
+                <tr><td>16</td><td>+12</td><td>+5</td><td>+5</td><td>+10</td><td class="special">Bonus Psionic Feat</td></tr>
+                <tr><td>17</td><td>+12</td><td>+5</td><td>+5</td><td>+10</td><td class="special">Siphon Memory (Identity Steal - Perfectly mimic target)</td></tr>
+                <tr><td>18</td><td>+13</td><td>+6</td><td>+6</td><td>+11</td><td class="special">Psychic Backlash (5d6 Int damage)</td></tr>
+                <tr><td>19</td><td>+14</td><td>+6</td><td>+6</td><td>+11</td><td class="special">Mind-Shatter (Aura of Feeblemind)</td></tr>
+                <tr><td>20</td><td>+15</td><td>+6</td><td>+6</td><td>+12</td><td class="special">The Hive-Mind (Store and access the memories of thousands of victims)</td></tr>
+            </table>
+            <div class="ability-list">
+                <h2>Class Features</h2>
+                <div class="ability-item"><span class="ability-name">Psionic Casting</span><br> By tapping into the core essence of the Memory-Siphon Agent, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Siphon Memory</span><br> You manipulate the minds or magical sensors of your foes. Target one creature within 60 feet. They must succeed on a Will save (DC 10 + 1/2 your level + Int mod) or become confused for 1d4 rounds and forget the events of the last minute.</div>
+                <div class="ability-item"><span class="ability-name">Psychic Backlash</span><br> You manipulate the minds or magical sensors of your foes. Target one creature within 60 feet. They must succeed on a Will save (DC 10 + 1/2 your level + Int mod) or become confused for 1d4 rounds and forget the events of the last minute.</div>
+                <div class="ability-item"><span class="ability-name">Bonus Psionic Feat</span><br> By tapping into the core essence of the Memory-Siphon Agent, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Trauma-Weave</span><br> By tapping into the core essence of the Memory-Siphon Agent, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Mind-Shatter</span><br> You manipulate the minds or magical sensors of your foes. Target one creature within 60 feet. They must succeed on a Will save (DC 10 + 1/2 your level + Int mod) or become confused for 1d4 rounds and forget the events of the last minute.</div>
+                <div class="ability-item"><span class="ability-name">The Hive-Mind</span><br> You manipulate the minds or magical sensors of your foes. Target one creature within 60 feet. They must succeed on a Will save (DC 10 + 1/2 your level + Int mod) or become confused for 1d4 rounds and forget the events of the last minute.</div>
+            </div>
+        </div>
+        <div id="logic-severer" class="class-section">
+            <h1>Logic-Severer</h1>
+            <div class="desc">Paradox-wielding mages who break the fundamental laws of reality, causing localized glitches, gravity inversions, and causality failures.</div>
+            <table>
+                <tr><th>Level</th><th>BAB</th><th>Fort</th><th>Ref</th><th>Will</th><th>Special</th></tr>
+                <tr><td>1</td><td>+0</td><td>+0</td><td>+0</td><td>+2</td><td class="special">Paradox Magick (Cast spells), Causality Glitch (Force reroll 1/day)</td></tr>
+                <tr><td>2</td><td>+1</td><td>+0</td><td>+0</td><td>+3</td><td class="special">Gravity Inversion (10 ft radius)</td></tr>
+                <tr><td>3</td><td>+1</td><td>+1</td><td>+1</td><td>+3</td><td class="special">Causality Glitch (2/day)</td></tr>
+                <tr><td>4</td><td>+2</td><td>+1</td><td>+1</td><td>+4</td><td class="special">Bonus Paradox Feat</td></tr>
+                <tr><td>5</td><td>+2</td><td>+1</td><td>+1</td><td>+4</td><td class="special">Sever Logic (Target loses language/Int for 1 round)</td></tr>
+                <tr><td>6</td><td>+3</td><td>+2</td><td>+2</td><td>+5</td><td class="special">Gravity Inversion (30 ft radius)</td></tr>
+                <tr><td>7</td><td>+3</td><td>+2</td><td>+2</td><td>+5</td><td class="special">Causality Glitch (3/day)</td></tr>
+                <tr><td>8</td><td>+4</td><td>+2</td><td>+2</td><td>+6</td><td class="special">Bonus Paradox Feat</td></tr>
+                <tr><td>9</td><td>+4</td><td>+3</td><td>+3</td><td>+6</td><td class="special">Sever Logic (Target forgets how to use weapons/spells)</td></tr>
+                <tr><td>10</td><td>+5</td><td>+3</td><td>+3</td><td>+7</td><td class="special">Reality Fracture (Create a zone where damage heals and healing damages)</td></tr>
+                <tr><td>11</td><td>+5</td><td>+3</td><td>+3</td><td>+7</td><td class="special">Causality Glitch (4/day)</td></tr>
+                <tr><td>12</td><td>+6</td><td>+4</td><td>+4</td><td>+8</td><td class="special">Bonus Paradox Feat</td></tr>
+                <tr><td>13</td><td>+6</td><td>+4</td><td>+4</td><td>+8</td><td class="special">Gravity Inversion (60 ft radius, selective)</td></tr>
+                <tr><td>14</td><td>+7</td><td>+4</td><td>+4</td><td>+9</td><td class="special">Sever Logic (Target's allies appear as enemies and vice versa)</td></tr>
+                <tr><td>15</td><td>+7</td><td>+5</td><td>+5</td><td>+9</td><td class="special">Causality Glitch (5/day)</td></tr>
+                <tr><td>16</td><td>+8</td><td>+5</td><td>+5</td><td>+10</td><td class="special">Bonus Paradox Feat</td></tr>
+                <tr><td>17</td><td>+8</td><td>+5</td><td>+5</td><td>+10</td><td class="special">Reality Fracture (Greater - Edit physical laws in a 100 ft radius)</td></tr>
+                <tr><td>18</td><td>+9</td><td>+6</td><td>+6</td><td>+11</td><td class="special">Sever Logic (Area of Effect)</td></tr>
+                <tr><td>19</td><td>+9</td><td>+6</td><td>+6</td><td>+11</td><td class="special">Causality Glitch (At Will)</td></tr>
+                <tr><td>20</td><td>+10</td><td>+6</td><td>+6</td><td>+12</td><td class="special">Author of the Glitch (Can rewrite a fundamental rule of the universe once per week)</td></tr>
+            </table>
+            <div class="ability-list">
+                <h2>Class Features</h2>
+                <div class="ability-item"><span class="ability-name">Paradox Magick</span><br> You twist the flow of time around yourself. As a swift action, you can force a reroll of any attack, save, or skill check made by you or a creature within 30 feet. You must accept the second result.</div>
+                <div class="ability-item"><span class="ability-name">Causality Glitch</span><br> By tapping into the core essence of the Logic-Severer, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Gravity Inversion</span><br> By tapping into the core essence of the Logic-Severer, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Bonus Paradox Feat</span><br> You twist the flow of time around yourself. As a swift action, you can force a reroll of any attack, save, or skill check made by you or a creature within 30 feet. You must accept the second result.</div>
+                <div class="ability-item"><span class="ability-name">Sever Logic</span><br> You manipulate the minds or magical sensors of your foes. Target one creature within 60 feet. They must succeed on a Will save (DC 10 + 1/2 your level + Int mod) or become confused for 1d4 rounds and forget the events of the last minute.</div>
+                <div class="ability-item"><span class="ability-name">Reality Fracture</span><br> By tapping into the core essence of the Logic-Severer, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Gravity Inversion (60 ft radius</span><br> By tapping into the core essence of the Logic-Severer, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">selective)</span><br> By tapping into the core essence of the Logic-Severer, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+                <div class="ability-item"><span class="ability-name">Author of the Glitch</span><br> By tapping into the core essence of the Logic-Severer, you bend the rules of reality to your will. Once per encounter, you can activate this ability as a swift action to gain advantage on all d20 rolls until the end of your turn, and enemies suffer disadvantage on saves against your abilities for the same duration.</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
