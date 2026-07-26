@@ -58,6 +58,11 @@
         .form-group { display: flex; flex-direction: column; }
         .form-group.full { margin-bottom: 1.5rem; }
         
+        .stat-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; }
+        .stat-box { text-align: center; }
+        .stat-box label { font-size: 0.75rem; color: var(--accent-pink); }
+        .stat-box input { text-align: center; font-weight: bold; padding: 0.5rem; }
+        
         label { margin-bottom: 0.5rem; font-weight: bold; color: var(--accent-silver); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
         
         select, input[type="text"] {
@@ -131,7 +136,7 @@
         <div class="panel">
             <h2 class="panel-title">The Forge</h2>
             
-            <button class="btn btn-chaos" id="btn-chaos">CHAOS DRIVE: Full Random Character</button>
+            <button class="btn btn-chaos" type="button" id="btn-chaos">CHAOS DRIVE: Full Random Character</button>
             <hr style="border-color: var(--border-color); margin: 1.5rem 0;">
             
             <!-- Name -->
@@ -140,6 +145,27 @@
                 <input type="text" id="custom-name" placeholder="Leave blank to auto-generate a corsair name">
             </div>
             
+            <!-- Attributes -->
+            <div class="form-group full" style="margin-bottom: 1.5rem; background: rgba(255, 42, 117, 0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255, 42, 117, 0.2);">
+                <label style="color:var(--text-main); font-size:1.1rem; border-bottom: 1px solid rgba(255,42,117,0.3); padding-bottom:5px; margin-bottom:10px;">Attributes</label>
+                <div class="form-row-2" style="margin-bottom: 10px;">
+                    <select id="roll-method">
+                        <option value="standard">Standard (4d6 Drop 1)</option>
+                        <option value="classic">Classic (3d6 Straight)</option>
+                        <option value="heroic">Heroic (2d6 + 6)</option>
+                    </select>
+                    <button class="btn btn-icon" type="button" id="btn-roll-stats" style="width:100%; font-size: 0.95rem; margin:0;">Roll Attributes 🎲</button>
+                </div>
+                <div class="stat-grid">
+                    <div class="stat-box"><label>STR</label><input type="number" id="stat-str" value="10"></div>
+                    <div class="stat-box"><label>DEX</label><input type="number" id="stat-dex" value="10"></div>
+                    <div class="stat-box"><label>CON</label><input type="number" id="stat-con" value="10"></div>
+                    <div class="stat-box"><label>INT</label><input type="number" id="stat-int" value="10"></div>
+                    <div class="stat-box"><label>WIS</label><input type="number" id="stat-wis" value="10"></div>
+                    <div class="stat-box"><label>CHA</label><input type="number" id="stat-cha" value="10"></div>
+                </div>
+            </div>
+
             <!-- Race Cascading Menus -->
             <div class="form-row">
                 <div class="form-group">
@@ -214,7 +240,37 @@
                 <div id="weapon-desc" style="margin-top: 5px; font-size: 0.9rem; color: var(--border-active);"></div>
             </div>
             
-            <button class="btn" id="btn-draft" style="margin-top: 1rem;">Draft to Fleet (Manual Build)</button>
+            <!-- Story Weapons -->
+            <div class="form-group full" style="margin-bottom: 1.5rem; background: rgba(200, 160, 40, 0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(200, 160, 40, 0.3);">
+                <label style="color:#e0d080; font-size:1.1rem; border-bottom: 1px solid rgba(200,160,40,0.3); padding-bottom:5px; margin-bottom:10px;">Equip Story Weapon (Optional)</label>
+                <select id="sel-story-weapon">
+                    <option value="None">None</option>
+                </select>
+                <div id="story-weapon-panel" style="display:none; margin-top: 10px;">
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Bond Status</label>
+                            <select id="sw-bond">
+                                <option value="Bonded">Bonded (Growing Artifact)</option>
+                                <option value="Severed">Severed (Reset to +1 Artifact)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Artifact Tier</label>
+                            <select id="sw-tier">
+                                <option value="1">Tier 1</option>
+                                <option value="2">Tier 2</option>
+                                <option value="3">Tier 3</option>
+                                <option value="4">Tier 4</option>
+                                <option value="5">Tier 5</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="sw-desc" style="margin-top: 10px; font-size: 0.95rem; color: #e0d080; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 4px;"></div>
+                </div>
+            </div>
+            
+            <button class="btn" type="button" id="btn-draft" style="margin-top: 1rem;">Draft to Fleet (Manual Build)</button>
         </div>
 
         <!-- Right Column -->
@@ -223,15 +279,45 @@
             <div id="roster-list">
                 <p style="color:var(--text-muted); text-align:center;">Your drafted crewmates will appear here.</p>
             </div>
-            <button class="btn btn-download" id="btn-download" style="display:none;">Download Complete Roster (.md)</button>
+            <button class="btn btn-download" type="button" id="btn-download" style="display:none;">Download Complete Roster (.md)</button>
         </div>
     </div>
 
     <script>
-        const db = {"Races": {"D&D 3.5": {"Standard": ["Human", "Elf", "Dwarf", "Halfling", "Gnome", "Half-Elf", "Half-Orc", "Aasimar", "Tiefling", "Genasi (Air)", "Genasi (Earth)", "Genasi (Fire)", "Genasi (Water)", "Elan", "Xeph", "Maenad", "Dromite", "Half-Giant", "Synad", "Kalashtar", "Changeling", "Shifter", "Warforged", "Goliath", "Illumian", "Raptoran", "Killoren", "Githyanki", "Githzerai", "Spellscale", "Dragonborn", "Beguiler", "Catfolk", "Centaur", "Minotaur", "Kobold", "Neraph", "Spiker", "Diabolus", "Hengeyokai", "Nezumi", "Spirit Folk", "Vanara", "Korobokuru", "Gloom", "Mongrelfolk", "Sea Kin", "Sharakim", "Skulk", "Underfolk"]}, "Pathfinder 1E": {"Standard": ["Human", "Elf", "Dwarf", "Halfling", "Gnome", "Half-Elf", "Half-Orc", "Aasimar", "Tiefling", "Sylph", "Undine", "Oread", "Ifrit", "Tengu", "Kitsune", "Wayang", "Vishkanya", "Ratfolk", "Grippli", "Drow", "Fetchling", "Goblin", "Hobgoblin", "Kobold", "Orc", "Svirfneblin", "Merfolk", "Strix", "Samsaran", "Nagaji", "Vanara", "Gillman", "Skinwalker", "Syrinx", "Wyrwood", "Wyvaran", "Gathlain", "Ghoran", "Vine Leshy", "Kasatha", "Lashunta", "Shirren", "Triaxian", "Vesk", "Ysoki", "Android", "Changeling", "Dhampir", "Astromazo", "Blood Artisan", "Caligni", "Cecaelia", "Centaur", "Deep One Hybrid", "Duergar", "Fletchling", "Gargoyle", "Girtablilu", "Gnoll", "Lizardfolk", "Locathah", "Munavri", "Naiad", "Nereid", "Ogrillon", "Pahmet", "Reptoid", "Rougarou", "Shabti", "Triton", "Trox", "Udaeus"]}, "D&D 3.5 Monsters (By Type)": {"Aberration": ["Aboleth", "Athach", "Beholder", "Carrion Crawler", "Choker", "Chuul", "Cloaker", "Delver", "Destrachan", "Drider", "Ethereal Filcher", "Ettercap", "Gibbering Mouther", "Grick", "Mind Flayer (Illithid)", "Naga", "Neothelid", "Otyugh", "Phasm", "Rust Monster", "Skum", "Umber Hulk", "Will-o'-Wisp", "Aboleth", "Athach", "Beholder", "Carrion Crawler", "Choker", "Chuul", "Cloaker", "Delver", "Destrachan", "Drider", "Ethereal Filcher", "Ettercap", "Gibbering Mouther", "Grick", "Mind Flayer (Illithid)", "Naga", "Neothelid", "Otyugh", "Phasm", "Rust Monster", "Skum", "Umber Hulk", "Will-o'-Wisp", "Aboleth", "Athach", "Beholder", "Carrion Crawler", "Choker", "Chuul", "Cloaker", "Delver", "Destrachan", "Drider", "Ethereal Filcher", "Ettercap", "Gibbering Mouther", "Grick", "Mind Flayer (Illithid)", "Naga", "Neothelid", "Otyugh", "Phasm", "Rust Monster", "Skum", "Umber Hulk", "Will-o'-Wisp", "Aboleth", "Athach", "Beholder", "Carrion Crawler", "Choker", "Chuul", "Cloaker", "Delver", "Destrachan", "Drider", "Ethereal Filcher", "Ettercap", "Gibbering Mouther", "Grick", "Mind Flayer (Illithid)", "Naga", "Neothelid", "Otyugh", "Phasm", "Rust Monster", "Skum", "Umber Hulk", "Will-o'-Wisp", "Aboleth", "Athach", "Beholder", "Carrion Crawler", "Choker", "Chuul", "Cloaker", "Delver", "Destrachan", "Drider", "Ethereal Filcher", "Ettercap", "Gibbering Mouther", "Grick", "Mind Flayer (Illithid)", "Naga", "Neothelid", "Otyugh", "Phasm", "Rust Monster", "Skum", "Umber Hulk", "Will-o'-Wisp"], "Dragon": ["Black Dragon", "Blue Dragon", "Green Dragon", "Red Dragon", "White Dragon", "Brass Dragon", "Bronze Dragon", "Copper Dragon", "Gold Dragon", "Silver Dragon", "Dragon Turtle", "Pseudodragon", "Wyvern", "Black Dragon", "Blue Dragon", "Green Dragon", "Red Dragon", "White Dragon", "Brass Dragon", "Bronze Dragon", "Copper Dragon", "Gold Dragon", "Silver Dragon", "Dragon Turtle", "Pseudodragon", "Wyvern", "Black Dragon", "Blue Dragon", "Green Dragon", "Red Dragon", "White Dragon", "Brass Dragon", "Bronze Dragon", "Copper Dragon", "Gold Dragon", "Silver Dragon", "Dragon Turtle", "Pseudodragon", "Wyvern", "Black Dragon", "Blue Dragon", "Green Dragon", "Red Dragon", "White Dragon", "Brass Dragon", "Bronze Dragon", "Copper Dragon", "Gold Dragon", "Silver Dragon", "Dragon Turtle", "Pseudodragon", "Wyvern", "Black Dragon", "Blue Dragon", "Green Dragon", "Red Dragon", "White Dragon", "Brass Dragon", "Bronze Dragon", "Copper Dragon", "Gold Dragon", "Silver Dragon", "Dragon Turtle", "Pseudodragon", "Wyvern"], "Fey": ["Dryad", "Grig", "Nixie", "Nymph", "Pixie", "Satyr", "Sprite", "Dryad", "Grig", "Nixie", "Nymph", "Pixie", "Satyr", "Sprite", "Dryad", "Grig", "Nixie", "Nymph", "Pixie", "Satyr", "Sprite", "Dryad", "Grig", "Nixie", "Nymph", "Pixie", "Satyr", "Sprite", "Dryad", "Grig", "Nixie", "Nymph", "Pixie", "Satyr", "Sprite"], "Magical Beast": ["Ankheg", "Aranea", "Basilisk", "Behir", "Blink Dog", "Bulette", "Chimera", "Cockatrice", "Darkmantle", "Digester", "Displacer Beast", "Eagle (Giant)", "Frost Worm", "Gargoyle", "Girallon", "Gorgon", "Griffon", "Hippogriff", "Hydra", "Kraken", "Krenshar", "Lamia", "Manticore", "Owl (Giant)", "Owlbear", "Pegasus", "Phase Spider", "Purple Worm", "Remorhaz", "Roper", "Sea Cat", "Shocker Lizard", "Sphinx", "Spider Eater", "Stirge", "Tarrasque", "Unicorn", "Winter Wolf", "Worg", "Yrthak", "Ankheg", "Aranea", "Basilisk", "Behir", "Blink Dog", "Bulette", "Chimera", "Cockatrice", "Darkmantle", "Digester", "Displacer Beast", "Eagle (Giant)", "Frost Worm", "Gargoyle", "Girallon", "Gorgon", "Griffon", "Hippogriff", "Hydra", "Kraken", "Krenshar", "Lamia", "Manticore", "Owl (Giant)", "Owlbear", "Pegasus", "Phase Spider", "Purple Worm", "Remorhaz", "Roper", "Sea Cat", "Shocker Lizard", "Sphinx", "Spider Eater", "Stirge", "Tarrasque", "Unicorn", "Winter Wolf", "Worg", "Yrthak", "Ankheg", "Aranea", "Basilisk", "Behir", "Blink Dog", "Bulette", "Chimera", "Cockatrice", "Darkmantle", "Digester", "Displacer Beast", "Eagle (Giant)", "Frost Worm", "Gargoyle", "Girallon", "Gorgon", "Griffon", "Hippogriff", "Hydra", "Kraken", "Krenshar", "Lamia", "Manticore", "Owl (Giant)", "Owlbear", "Pegasus", "Phase Spider", "Purple Worm", "Remorhaz", "Roper", "Sea Cat", "Shocker Lizard", "Sphinx", "Spider Eater", "Stirge", "Tarrasque", "Unicorn", "Winter Wolf", "Worg", "Yrthak", "Ankheg", "Aranea", "Basilisk", "Behir", "Blink Dog", "Bulette", "Chimera", "Cockatrice", "Darkmantle", "Digester", "Displacer Beast", "Eagle (Giant)", "Frost Worm", "Gargoyle", "Girallon", "Gorgon", "Griffon", "Hippogriff", "Hydra", "Kraken", "Krenshar", "Lamia", "Manticore", "Owl (Giant)", "Owlbear", "Pegasus", "Phase Spider", "Purple Worm", "Remorhaz", "Roper", "Sea Cat", "Shocker Lizard", "Sphinx", "Spider Eater", "Stirge", "Tarrasque", "Unicorn", "Winter Wolf", "Worg", "Yrthak", "Ankheg", "Aranea", "Basilisk", "Behir", "Blink Dog", "Bulette", "Chimera", "Cockatrice", "Darkmantle", "Digester", "Displacer Beast", "Eagle (Giant)", "Frost Worm", "Gargoyle", "Girallon", "Gorgon", "Griffon", "Hippogriff", "Hydra", "Kraken", "Krenshar", "Lamia", "Manticore", "Owl (Giant)", "Owlbear", "Pegasus", "Phase Spider", "Purple Worm", "Remorhaz", "Roper", "Sea Cat", "Shocker Lizard", "Sphinx", "Spider Eater", "Stirge", "Tarrasque", "Unicorn", "Winter Wolf", "Worg", "Yrthak"], "Monstrous Humanoid": ["Bugbear", "Centaur", "Derro", "Doppelganger", "Gargoyle", "Grimlock", "Hag", "Harpy", "Kuo-toa", "Medusa", "Minotaur", "Sahuagin", "Troglodyte", "Yuan-ti", "Bugbear", "Centaur", "Derro", "Doppelganger", "Gargoyle", "Grimlock", "Hag", "Harpy", "Kuo-toa", "Medusa", "Minotaur", "Sahuagin", "Troglodyte", "Yuan-ti", "Bugbear", "Centaur", "Derro", "Doppelganger", "Gargoyle", "Grimlock", "Hag", "Harpy", "Kuo-toa", "Medusa", "Minotaur", "Sahuagin", "Troglodyte", "Yuan-ti", "Bugbear", "Centaur", "Derro", "Doppelganger", "Gargoyle", "Grimlock", "Hag", "Harpy", "Kuo-toa", "Medusa", "Minotaur", "Sahuagin", "Troglodyte", "Yuan-ti", "Bugbear", "Centaur", "Derro", "Doppelganger", "Gargoyle", "Grimlock", "Hag", "Harpy", "Kuo-toa", "Medusa", "Minotaur", "Sahuagin", "Troglodyte", "Yuan-ti"], "Outsider": ["Achaierai", "Archon", "Arrowhawk", "Aasimar", "Azer", "Barghest", "Bar-lgura", "Bebilith", "Belker", "Chaos Beast", "Demon", "Devil", "Djinni", "Efreeti", "Elemental", "Formian", "Genie", "Hell Hound", "Howler", "Inevitable", "Janni", "Kyton", "Lillend", "Marid", "Mephit", "Night Hag", "Nightmare", "Planetar", "Quasit", "Rakshasa", "Rast", "Ravid", "Salamander", "Shadow Mastiff", "Slaad", "Solar", "Succubus", "Tiefling", "Tojanida", "Triton", "Vargouille", "Xill", "Xorn", "Yeth Hound", "Zelekhut", "Achaierai", "Archon", "Arrowhawk", "Aasimar", "Azer", "Barghest", "Bar-lgura", "Bebilith", "Belker", "Chaos Beast", "Demon", "Devil", "Djinni", "Efreeti", "Elemental", "Formian", "Genie", "Hell Hound", "Howler", "Inevitable", "Janni", "Kyton", "Lillend", "Marid", "Mephit", "Night Hag", "Nightmare", "Planetar", "Quasit", "Rakshasa", "Rast", "Ravid", "Salamander", "Shadow Mastiff", "Slaad", "Solar", "Succubus", "Tiefling", "Tojanida", "Triton", "Vargouille", "Xill", "Xorn", "Yeth Hound", "Zelekhut", "Achaierai", "Archon", "Arrowhawk", "Aasimar", "Azer", "Barghest", "Bar-lgura", "Bebilith", "Belker", "Chaos Beast", "Demon", "Devil", "Djinni", "Efreeti", "Elemental", "Formian", "Genie", "Hell Hound", "Howler", "Inevitable", "Janni", "Kyton", "Lillend", "Marid", "Mephit", "Night Hag", "Nightmare", "Planetar", "Quasit", "Rakshasa", "Rast", "Ravid", "Salamander", "Shadow Mastiff", "Slaad", "Solar", "Succubus", "Tiefling", "Tojanida", "Triton", "Vargouille", "Xill", "Xorn", "Yeth Hound", "Zelekhut", "Achaierai", "Archon", "Arrowhawk", "Aasimar", "Azer", "Barghest", "Bar-lgura", "Bebilith", "Belker", "Chaos Beast", "Demon", "Devil", "Djinni", "Efreeti", "Elemental", "Formian", "Genie", "Hell Hound", "Howler", "Inevitable", "Janni", "Kyton", "Lillend", "Marid", "Mephit", "Night Hag", "Nightmare", "Planetar", "Quasit", "Rakshasa", "Rast", "Ravid", "Salamander", "Shadow Mastiff", "Slaad", "Solar", "Succubus", "Tiefling", "Tojanida", "Triton", "Vargouille", "Xill", "Xorn", "Yeth Hound", "Zelekhut", "Achaierai", "Archon", "Arrowhawk", "Aasimar", "Azer", "Barghest", "Bar-lgura", "Bebilith", "Belker", "Chaos Beast", "Demon", "Devil", "Djinni", "Efreeti", "Elemental", "Formian", "Genie", "Hell Hound", "Howler", "Inevitable", "Janni", "Kyton", "Lillend", "Marid", "Mephit", "Night Hag", "Nightmare", "Planetar", "Quasit", "Rakshasa", "Rast", "Ravid", "Salamander", "Shadow Mastiff", "Slaad", "Solar", "Succubus", "Tiefling", "Tojanida", "Triton", "Vargouille", "Xill", "Xorn", "Yeth Hound", "Zelekhut"], "Undead": ["Allip", "Banshee", "Bodak", "Devourer", "Ghast", "Ghost", "Ghoul", "Lich", "Mohrg", "Mummy", "Nightcrawler", "Nightwalker", "Nightwing", "Shadow", "Skeleton", "Spectre", "Vampire", "Vampire Spawn", "Wight", "Wraith", "Zombie", "Allip", "Banshee", "Bodak", "Devourer", "Ghast", "Ghost", "Ghoul", "Lich", "Mohrg", "Mummy", "Nightcrawler", "Nightwalker", "Nightwing", "Shadow", "Skeleton", "Spectre", "Vampire", "Vampire Spawn", "Wight", "Wraith", "Zombie", "Allip", "Banshee", "Bodak", "Devourer", "Ghast", "Ghost", "Ghoul", "Lich", "Mohrg", "Mummy", "Nightcrawler", "Nightwalker", "Nightwing", "Shadow", "Skeleton", "Spectre", "Vampire", "Vampire Spawn", "Wight", "Wraith", "Zombie", "Allip", "Banshee", "Bodak", "Devourer", "Ghast", "Ghost", "Ghoul", "Lich", "Mohrg", "Mummy", "Nightcrawler", "Nightwalker", "Nightwing", "Shadow", "Skeleton", "Spectre", "Vampire", "Vampire Spawn", "Wight", "Wraith", "Zombie", "Allip", "Banshee", "Bodak", "Devourer", "Ghast", "Ghost", "Ghoul", "Lich", "Mohrg", "Mummy", "Nightcrawler", "Nightwalker", "Nightwing", "Shadow", "Skeleton", "Spectre", "Vampire", "Vampire Spawn", "Wight", "Wraith", "Zombie"]}, "PF1E Monsters (By Type)": {"Aberration": ["Alghollthu", "Amoeba", "Aboleth", "Blindheim", "Cerebric Fungus", "Choker", "Chuul", "Cloaker", "Color Out of Space", "Dark Caller", "Decapus", "Destrachan", "Drider", "Elder Thing", "Faceless Stalker", "Fleshdreg", "Flumph", "Flying Polyp", "Froghemoth", "Gargoyle", "Gibbering Mouther", "Gohn", "Gug", "Hound of Tindalos", "Intellect Devourer", "Lunarma", "Mi-Go", "Mooncalf", "Neothelid", "Otyugh", "Reefclaw", "Roper", "Rust Monster", "Seugathi", "Shoggoth", "Skum", "Slithering Tracker", "Star Vampire", "Tentamort", "Vampiric Mist", "Vegepygmy", "Weaverworm", "Worm That Walks", "Yithian", "Alghollthu", "Amoeba", "Aboleth", "Blindheim", "Cerebric Fungus", "Choker", "Chuul", "Cloaker", "Color Out of Space", "Dark Caller", "Decapus", "Destrachan", "Drider", "Elder Thing", "Faceless Stalker", "Fleshdreg", "Flumph", "Flying Polyp", "Froghemoth", "Gargoyle", "Gibbering Mouther", "Gohn", "Gug", "Hound of Tindalos", "Intellect Devourer", "Lunarma", "Mi-Go", "Mooncalf", "Neothelid", "Otyugh", "Reefclaw", "Roper", "Rust Monster", "Seugathi", "Shoggoth", "Skum", "Slithering Tracker", "Star Vampire", "Tentamort", "Vampiric Mist", "Vegepygmy", "Weaverworm", "Worm That Walks", "Yithian", "Alghollthu", "Amoeba", "Aboleth", "Blindheim", "Cerebric Fungus", "Choker", "Chuul", "Cloaker", "Color Out of Space", "Dark Caller", "Decapus", "Destrachan", "Drider", "Elder Thing", "Faceless Stalker", "Fleshdreg", "Flumph", "Flying Polyp", "Froghemoth", "Gargoyle", "Gibbering Mouther", "Gohn", "Gug", "Hound of Tindalos", "Intellect Devourer", "Lunarma", "Mi-Go", "Mooncalf", "Neothelid", "Otyugh", "Reefclaw", "Roper", "Rust Monster", "Seugathi", "Shoggoth", "Skum", "Slithering Tracker", "Star Vampire", "Tentamort", "Vampiric Mist", "Vegepygmy", "Weaverworm", "Worm That Walks", "Yithian", "Alghollthu", "Amoeba", "Aboleth", "Blindheim", "Cerebric Fungus", "Choker", "Chuul", "Cloaker", "Color Out of Space", "Dark Caller", "Decapus", "Destrachan", "Drider", "Elder Thing", "Faceless Stalker", "Fleshdreg", "Flumph", "Flying Polyp", "Froghemoth", "Gargoyle", "Gibbering Mouther", "Gohn", "Gug", "Hound of Tindalos", "Intellect Devourer", "Lunarma", "Mi-Go", "Mooncalf", "Neothelid", "Otyugh", "Reefclaw", "Roper", "Rust Monster", "Seugathi", "Shoggoth", "Skum", "Slithering Tracker", "Star Vampire", "Tentamort", "Vampiric Mist", "Vegepygmy", "Weaverworm", "Worm That Walks", "Yithian", "Alghollthu", "Amoeba", "Aboleth", "Blindheim", "Cerebric Fungus", "Choker", "Chuul", "Cloaker", "Color Out of Space", "Dark Caller", "Decapus", "Destrachan", "Drider", "Elder Thing", "Faceless Stalker", "Fleshdreg", "Flumph", "Flying Polyp", "Froghemoth", "Gargoyle", "Gibbering Mouther", "Gohn", "Gug", "Hound of Tindalos", "Intellect Devourer", "Lunarma", "Mi-Go", "Mooncalf", "Neothelid", "Otyugh", "Reefclaw", "Roper", "Rust Monster", "Seugathi", "Shoggoth", "Skum", "Slithering Tracker", "Star Vampire", "Tentamort", "Vampiric Mist", "Vegepygmy", "Weaverworm", "Worm That Walks", "Yithian"], "Dragon": ["Chromatic Dragon", "Metallic Dragon", "Primal Dragon", "Imperial Dragon", "Outer Dragon", "Esoteric Dragon", "Drake", "Fairy Dragon", "Linnorm", "Pseudodragon", "Tatzlwyrm", "Wyvern", "Chromatic Dragon", "Metallic Dragon", "Primal Dragon", "Imperial Dragon", "Outer Dragon", "Esoteric Dragon", "Drake", "Fairy Dragon", "Linnorm", "Pseudodragon", "Tatzlwyrm", "Wyvern", "Chromatic Dragon", "Metallic Dragon", "Primal Dragon", "Imperial Dragon", "Outer Dragon", "Esoteric Dragon", "Drake", "Fairy Dragon", "Linnorm", "Pseudodragon", "Tatzlwyrm", "Wyvern", "Chromatic Dragon", "Metallic Dragon", "Primal Dragon", "Imperial Dragon", "Outer Dragon", "Esoteric Dragon", "Drake", "Fairy Dragon", "Linnorm", "Pseudodragon", "Tatzlwyrm", "Wyvern", "Chromatic Dragon", "Metallic Dragon", "Primal Dragon", "Imperial Dragon", "Outer Dragon", "Esoteric Dragon", "Drake", "Fairy Dragon", "Linnorm", "Pseudodragon", "Tatzlwyrm", "Wyvern"], "Fey": ["Alpluachra", "Atomie", "Baobhan Sith", "Boggart", "Brownie", "Buckawn", "Cold Rider", "Dryad", "Erlking", "Faun", "Forlarren", "Gremlin", "Grimple", "Hamadryad", "Kelpie", "Korred", "Leprechaun", "Lurker in Light", "Mite", "Muse", "Naiad", "Nereid", "Nixie", "Norn", "Nymph", "Oceanid", "Pech", "Pixie", "Pooka", "Quickling", "Redcap", "Rusalka", "Satyr", "Seilenos", "Sprite", "Svartalfar", "Tooth Fairy", "Vodyanoi", "Alpluachra", "Atomie", "Baobhan Sith", "Boggart", "Brownie", "Buckawn", "Cold Rider", "Dryad", "Erlking", "Faun", "Forlarren", "Gremlin", "Grimple", "Hamadryad", "Kelpie", "Korred", "Leprechaun", "Lurker in Light", "Mite", "Muse", "Naiad", "Nereid", "Nixie", "Norn", "Nymph", "Oceanid", "Pech", "Pixie", "Pooka", "Quickling", "Redcap", "Rusalka", "Satyr", "Seilenos", "Sprite", "Svartalfar", "Tooth Fairy", "Vodyanoi", "Alpluachra", "Atomie", "Baobhan Sith", "Boggart", "Brownie", "Buckawn", "Cold Rider", "Dryad", "Erlking", "Faun", "Forlarren", "Gremlin", "Grimple", "Hamadryad", "Kelpie", "Korred", "Leprechaun", "Lurker in Light", "Mite", "Muse", "Naiad", "Nereid", "Nixie", "Norn", "Nymph", "Oceanid", "Pech", "Pixie", "Pooka", "Quickling", "Redcap", "Rusalka", "Satyr", "Seilenos", "Sprite", "Svartalfar", "Tooth Fairy", "Vodyanoi", "Alpluachra", "Atomie", "Baobhan Sith", "Boggart", "Brownie", "Buckawn", "Cold Rider", "Dryad", "Erlking", "Faun", "Forlarren", "Gremlin", "Grimple", "Hamadryad", "Kelpie", "Korred", "Leprechaun", "Lurker in Light", "Mite", "Muse", "Naiad", "Nereid", "Nixie", "Norn", "Nymph", "Oceanid", "Pech", "Pixie", "Pooka", "Quickling", "Redcap", "Rusalka", "Satyr", "Seilenos", "Sprite", "Svartalfar", "Tooth Fairy", "Vodyanoi", "Alpluachra", "Atomie", "Baobhan Sith", "Boggart", "Brownie", "Buckawn", "Cold Rider", "Dryad", "Erlking", "Faun", "Forlarren", "Gremlin", "Grimple", "Hamadryad", "Kelpie", "Korred", "Leprechaun", "Lurker in Light", "Mite", "Muse", "Naiad", "Nereid", "Nixie", "Norn", "Nymph", "Oceanid", "Pech", "Pixie", "Pooka", "Quickling", "Redcap", "Rusalka", "Satyr", "Seilenos", "Sprite", "Svartalfar", "Tooth Fairy", "Vodyanoi"], "Magical Beast": ["Ahool", "Amphisbaena", "Ankheg", "Aurumvorax", "Axe Beak", "Barghest", "Basilisk", "Behir", "Blindheim", "Blink Dog", "Blood Hawk", "Bulette", "Bunyip", "Catoblepas", "Chimera", "Chupacabra", "Cockatrice", "Couatl", "Darkmantle", "Death Worm", "Disenchanter", "Displacer Beast", "Dragonne", "Drake", "Eblis", "Eel", "Frost Worm", "Gargoyle", "Girallon", "Gorgon", "Griffon", "Hippogriff", "Hodag", "Hydra", "Jaculi", "Kamadan", "Kraken", "Krenshar", "Lamia", "Leucrotta", "Manticore", "Mobat", "Moon Dog", "Owlbear", "Pegasus", "Peryton", "Phase Spider", "Phoenix", "Purple Worm", "Remorhaz", "Roper", "Sea Cat", "Shocker Lizard", "Simurgh", "Sphinx", "Spider Eater", "Squid", "Stirge", "Tarrasque", "Thunderbird", "Unicorn", "Winter Wolf", "Worg", "Yrthak", "Ahool", "Amphisbaena", "Ankheg", "Aurumvorax", "Axe Beak", "Barghest", "Basilisk", "Behir", "Blindheim", "Blink Dog", "Blood Hawk", "Bulette", "Bunyip", "Catoblepas", "Chimera", "Chupacabra", "Cockatrice", "Couatl", "Darkmantle", "Death Worm", "Disenchanter", "Displacer Beast", "Dragonne", "Drake", "Eblis", "Eel", "Frost Worm", "Gargoyle", "Girallon", "Gorgon", "Griffon", "Hippogriff", "Hodag", "Hydra", "Jaculi", "Kamadan", "Kraken", "Krenshar", "Lamia", "Leucrotta", "Manticore", "Mobat", "Moon Dog", "Owlbear", "Pegasus", "Peryton", "Phase Spider", "Phoenix", "Purple Worm", "Remorhaz", "Roper", "Sea Cat", "Shocker Lizard", "Simurgh", "Sphinx", "Spider Eater", "Squid", "Stirge", "Tarrasque", "Thunderbird", "Unicorn", "Winter Wolf", "Worg", "Yrthak", "Ahool", "Amphisbaena", "Ankheg", "Aurumvorax", "Axe Beak", "Barghest", "Basilisk", "Behir", "Blindheim", "Blink Dog", "Blood Hawk", "Bulette", "Bunyip", "Catoblepas", "Chimera", "Chupacabra", "Cockatrice", "Couatl", "Darkmantle", "Death Worm", "Disenchanter", "Displacer Beast", "Dragonne", "Drake", "Eblis", "Eel", "Frost Worm", "Gargoyle", "Girallon", "Gorgon", "Griffon", "Hippogriff", "Hodag", "Hydra", "Jaculi", "Kamadan", "Kraken", "Krenshar", "Lamia", "Leucrotta", "Manticore", "Mobat", "Moon Dog", "Owlbear", "Pegasus", "Peryton", "Phase Spider", "Phoenix", "Purple Worm", "Remorhaz", "Roper", "Sea Cat", "Shocker Lizard", "Simurgh", "Sphinx", "Spider Eater", "Squid", "Stirge", "Tarrasque", "Thunderbird", "Unicorn", "Winter Wolf", "Worg", "Yrthak", "Ahool", "Amphisbaena", "Ankheg", "Aurumvorax", "Axe Beak", "Barghest", "Basilisk", "Behir", "Blindheim", "Blink Dog", "Blood Hawk", "Bulette", "Bunyip", "Catoblepas", "Chimera", "Chupacabra", "Cockatrice", "Couatl", "Darkmantle", "Death Worm", "Disenchanter", "Displacer Beast", "Dragonne", "Drake", "Eblis", "Eel", "Frost Worm", "Gargoyle", "Girallon", "Gorgon", "Griffon", "Hippogriff", "Hodag", "Hydra", "Jaculi", "Kamadan", "Kraken", "Krenshar", "Lamia", "Leucrotta", "Manticore", "Mobat", "Moon Dog", "Owlbear", "Pegasus", "Peryton", "Phase Spider", "Phoenix", "Purple Worm", "Remorhaz", "Roper", "Sea Cat", "Shocker Lizard", "Simurgh", "Sphinx", "Spider Eater", "Squid", "Stirge", "Tarrasque", "Thunderbird", "Unicorn", "Winter Wolf", "Worg", "Yrthak", "Ahool", "Amphisbaena", "Ankheg", "Aurumvorax", "Axe Beak", "Barghest", "Basilisk", "Behir", "Blindheim", "Blink Dog", "Blood Hawk", "Bulette", "Bunyip", "Catoblepas", "Chimera", "Chupacabra", "Cockatrice", "Couatl", "Darkmantle", "Death Worm", "Disenchanter", "Displacer Beast", "Dragonne", "Drake", "Eblis", "Eel", "Frost Worm", "Gargoyle", "Girallon", "Gorgon", "Griffon", "Hippogriff", "Hodag", "Hydra", "Jaculi", "Kamadan", "Kraken", "Krenshar", "Lamia", "Leucrotta", "Manticore", "Mobat", "Moon Dog", "Owlbear", "Pegasus", "Peryton", "Phase Spider", "Phoenix", "Purple Worm", "Remorhaz", "Roper", "Sea Cat", "Shocker Lizard", "Simurgh", "Sphinx", "Spider Eater", "Squid", "Stirge", "Tarrasque", "Thunderbird", "Unicorn", "Winter Wolf", "Worg", "Yrthak"], "Monstrous Humanoid": ["Adaro", "Boggard", "Bugbear", "Caligni", "Cecaelia", "Centaur", "Charau-ka", "Choldrith", "Chull", "Cyclops", "Derro", "Doppelganger", "Drow", "Euryale", "Gargoyle", "Girtablilu", "Grimlock", "Hag", "Harpy", "Hobgoblin", "Kuo-toa", "Locathah", "Medusa", "Minotaur", "Morlock", "Mothman", "Ogre", "Popobawa", "Sahuagin", "Strix", "Tauric", "Thriae", "Troll", "Wendigo", "Yeti", "Yuan-ti", "Adaro", "Boggard", "Bugbear", "Caligni", "Cecaelia", "Centaur", "Charau-ka", "Choldrith", "Chull", "Cyclops", "Derro", "Doppelganger", "Drow", "Euryale", "Gargoyle", "Girtablilu", "Grimlock", "Hag", "Harpy", "Hobgoblin", "Kuo-toa", "Locathah", "Medusa", "Minotaur", "Morlock", "Mothman", "Ogre", "Popobawa", "Sahuagin", "Strix", "Tauric", "Thriae", "Troll", "Wendigo", "Yeti", "Yuan-ti", "Adaro", "Boggard", "Bugbear", "Caligni", "Cecaelia", "Centaur", "Charau-ka", "Choldrith", "Chull", "Cyclops", "Derro", "Doppelganger", "Drow", "Euryale", "Gargoyle", "Girtablilu", "Grimlock", "Hag", "Harpy", "Hobgoblin", "Kuo-toa", "Locathah", "Medusa", "Minotaur", "Morlock", "Mothman", "Ogre", "Popobawa", "Sahuagin", "Strix", "Tauric", "Thriae", "Troll", "Wendigo", "Yeti", "Yuan-ti", "Adaro", "Boggard", "Bugbear", "Caligni", "Cecaelia", "Centaur", "Charau-ka", "Choldrith", "Chull", "Cyclops", "Derro", "Doppelganger", "Drow", "Euryale", "Gargoyle", "Girtablilu", "Grimlock", "Hag", "Harpy", "Hobgoblin", "Kuo-toa", "Locathah", "Medusa", "Minotaur", "Morlock", "Mothman", "Ogre", "Popobawa", "Sahuagin", "Strix", "Tauric", "Thriae", "Troll", "Wendigo", "Yeti", "Yuan-ti", "Adaro", "Boggard", "Bugbear", "Caligni", "Cecaelia", "Centaur", "Charau-ka", "Choldrith", "Chull", "Cyclops", "Derro", "Doppelganger", "Drow", "Euryale", "Gargoyle", "Girtablilu", "Grimlock", "Hag", "Harpy", "Hobgoblin", "Kuo-toa", "Locathah", "Medusa", "Minotaur", "Morlock", "Mothman", "Ogre", "Popobawa", "Sahuagin", "Strix", "Tauric", "Thriae", "Troll", "Wendigo", "Yeti", "Yuan-ti"], "Outsider": ["Aeon", "Agathion", "Archon", "Asura", "Azata", "Daemon", "Demodand", "Demon", "Devil", "Div", "Elemental", "Genie", "Inevitable", "Kami", "Kyton", "Manasaputra", "Oni", "Protean", "Psychopomp", "Qlippoth", "Rakshasa", "Sahkil", "Shabti", "Aeon", "Agathion", "Archon", "Asura", "Azata", "Daemon", "Demodand", "Demon", "Devil", "Div", "Elemental", "Genie", "Inevitable", "Kami", "Kyton", "Manasaputra", "Oni", "Protean", "Psychopomp", "Qlippoth", "Rakshasa", "Sahkil", "Shabti", "Aeon", "Agathion", "Archon", "Asura", "Azata", "Daemon", "Demodand", "Demon", "Devil", "Div", "Elemental", "Genie", "Inevitable", "Kami", "Kyton", "Manasaputra", "Oni", "Protean", "Psychopomp", "Qlippoth", "Rakshasa", "Sahkil", "Shabti", "Aeon", "Agathion", "Archon", "Asura", "Azata", "Daemon", "Demodand", "Demon", "Devil", "Div", "Elemental", "Genie", "Inevitable", "Kami", "Kyton", "Manasaputra", "Oni", "Protean", "Psychopomp", "Qlippoth", "Rakshasa", "Sahkil", "Shabti", "Aeon", "Agathion", "Archon", "Asura", "Azata", "Daemon", "Demodand", "Demon", "Devil", "Div", "Elemental", "Genie", "Inevitable", "Kami", "Kyton", "Manasaputra", "Oni", "Protean", "Psychopomp", "Qlippoth", "Rakshasa", "Sahkil", "Shabti"], "Undead": ["Allip", "Attic Whisperer", "Banshee", "Barrow Wight", "Baykok", "Berbalang", "Bodak", "Bone Ship", "Caryatid Column", "Crawling Hand", "Crypt Thing", "Devourer", "Draugr", "Dullahan", "Ecorche", "Festering", "Festrog", "Forsaken Lich", "Gallowdead", "Ghast", "Ghost", "Ghoul", "Graveknight", "Guecubu", "Huecuva", "Jiang-shi", "Lich", "Mohrg", "Moroi", "Mummy", "Nightmare", "Nightshade", "Nosferatu", "Penanggalen", "Phantom Armor", "Poltergeist", "Revenant", "Shadow", "Skeletal Champion", "Skeleton", "Spectre", "Totenmaske", "Vampire", "Wight", "Winterwight", "Wraith", "Zombie", "Zombie Lord", "Allip", "Attic Whisperer", "Banshee", "Barrow Wight", "Baykok", "Berbalang", "Bodak", "Bone Ship", "Caryatid Column", "Crawling Hand", "Crypt Thing", "Devourer", "Draugr", "Dullahan", "Ecorche", "Festering", "Festrog", "Forsaken Lich", "Gallowdead", "Ghast", "Ghost", "Ghoul", "Graveknight", "Guecubu", "Huecuva", "Jiang-shi", "Lich", "Mohrg", "Moroi", "Mummy", "Nightmare", "Nightshade", "Nosferatu", "Penanggalen", "Phantom Armor", "Poltergeist", "Revenant", "Shadow", "Skeletal Champion", "Skeleton", "Spectre", "Totenmaske", "Vampire", "Wight", "Winterwight", "Wraith", "Zombie", "Zombie Lord", "Allip", "Attic Whisperer", "Banshee", "Barrow Wight", "Baykok", "Berbalang", "Bodak", "Bone Ship", "Caryatid Column", "Crawling Hand", "Crypt Thing", "Devourer", "Draugr", "Dullahan", "Ecorche", "Festering", "Festrog", "Forsaken Lich", "Gallowdead", "Ghast", "Ghost", "Ghoul", "Graveknight", "Guecubu", "Huecuva", "Jiang-shi", "Lich", "Mohrg", "Moroi", "Mummy", "Nightmare", "Nightshade", "Nosferatu", "Penanggalen", "Phantom Armor", "Poltergeist", "Revenant", "Shadow", "Skeletal Champion", "Skeleton", "Spectre", "Totenmaske", "Vampire", "Wight", "Winterwight", "Wraith", "Zombie", "Zombie Lord", "Allip", "Attic Whisperer", "Banshee", "Barrow Wight", "Baykok", "Berbalang", "Bodak", "Bone Ship", "Caryatid Column", "Crawling Hand", "Crypt Thing", "Devourer", "Draugr", "Dullahan", "Ecorche", "Festering", "Festrog", "Forsaken Lich", "Gallowdead", "Ghast", "Ghost", "Ghoul", "Graveknight", "Guecubu", "Huecuva", "Jiang-shi", "Lich", "Mohrg", "Moroi", "Mummy", "Nightmare", "Nightshade", "Nosferatu", "Penanggalen", "Phantom Armor", "Poltergeist", "Revenant", "Shadow", "Skeletal Champion", "Skeleton", "Spectre", "Totenmaske", "Vampire", "Wight", "Winterwight", "Wraith", "Zombie", "Zombie Lord", "Allip", "Attic Whisperer", "Banshee", "Barrow Wight", "Baykok", "Berbalang", "Bodak", "Bone Ship", "Caryatid Column", "Crawling Hand", "Crypt Thing", "Devourer", "Draugr", "Dullahan", "Ecorche", "Festering", "Festrog", "Forsaken Lich", "Gallowdead", "Ghast", "Ghost", "Ghoul", "Graveknight", "Guecubu", "Huecuva", "Jiang-shi", "Lich", "Mohrg", "Moroi", "Mummy", "Nightmare", "Nightshade", "Nosferatu", "Penanggalen", "Phantom Armor", "Poltergeist", "Revenant", "Shadow", "Skeletal Champion", "Skeleton", "Spectre", "Totenmaske", "Vampire", "Wight", "Winterwight", "Wraith", "Zombie", "Zombie Lord"]}, "Vanguard Campaign": {"Mutated": ["Deep-Scrag Spliced", "Pink-Lab Chimera", "Leviathan-Blooded", "Illithid-Kin Rebel", "Avian-Fey Hybrid", "Golgoth-Zul Drone"], "Constructed": ["Silver-Lattice Construct", "Quartz-Grafted Humanoid", "Iron-Knell Diver"], "Anomalous": ["Void-Touched Entity", "Chronal Echo", "Psionic-Resonance Being"]}}, "Classes": {"D&D 3.5": {"Core": ["Barbarian", "Bard", "Cleric", "Druid", "Fighter", "Monk", "Paladin", "Ranger", "Rogue", "Sorcerer", "Wizard"], "Complete Series": ["Warlock", "Hexblade", "Swashbuckler", "Warmage", "Favored Soul", "Shugenja", "Spirit Shaman", "Ninja", "Scout", "Spellthief", "Samurai", "Wu Jen"], "Player's Handbook II": ["Beguiler", "Dragon Shaman", "Duskblade", "Knight"], "Tome of Magic": ["Binder", "Shadowcaster", "Truenamer"], "Magic of Incarnum": ["Incarnate", "Soulborn", "Totemist"], "Tome of Battle": ["Crusader", "Swordsage", "Warblade"], "Psionics": ["Psion", "Psychic Warrior", "Soulknife", "Wilder", "Ardent", "Divine Mind", "Erudite", "Lurk"], "Supplemental & Setting": ["Artificer", "Archivist", "Dread Necromancer", "Factotum", "Dragonfire Adept", "Mountebank", "Savant", "Sha'ir", "Death Master", "Jester"], "NPC": ["Adept", "Aristocrat", "Commoner", "Expert", "Warrior"], "3rd Party (Green Ronin / Mongoose / etc.)": ["Assassin (Base)", "Alchemist (3pp)", "Shaman (3pp)", "Witch (3pp)", "Warlord (3pp)", "Gladiator", "Noble", "Courtier", "Pirate", "Corsair", "Mercenary", "Beastmaster", "Chaos Mage"]}, "Pathfinder 1E": {"Core": ["Barbarian", "Bard", "Cleric", "Druid", "Fighter", "Monk", "Paladin", "Ranger", "Rogue", "Sorcerer", "Wizard"], "Base": ["Alchemist", "Cavalier", "Gunslinger", "Inquisitor", "Magus", "Oracle", "Summoner", "Witch", "Antipaladin", "Ninja", "Samurai"], "Hybrid": ["Arcanist", "Bloodrager", "Brawler", "Hunter", "Investigator", "Shaman", "Skald", "Slayer", "Swashbuckler", "Warpriest"], "Occult": ["Kineticist", "Medium", "Mesmerist", "Occultist", "Psychic", "Spiritualist"], "Alternate": ["Shifter", "Vampire Hunter", "Unchained Barbarian", "Unchained Monk", "Unchained Rogue", "Unchained Summoner"], "NPC": ["Adept", "Aristocrat", "Commoner", "Expert", "Warrior"], "3rd Party (Dreamscarred Press)": ["Aegis", "Cryptic", "Dread", "Marksman", "Psion (DSP)", "Psychic Warrior (DSP)", "Soulknife (DSP)", "Tactician", "Vitalist", "Wilder (DSP)", "Warder", "Warlord", "Stalker", "Zealot", "Mystic", "Harbinger", "Daevic", "Nexus", "Promethean", "Vizier"], "3rd Party (Spheres of Power/Might)": ["Armorist", "Elementalist", "Eliciter", "Fey Adept", "Hedgewitch", "Incanter", "Mageknight", "Shifter (Spheres)", "Soul Weaver", "Symbiat", "Thaumaturge", "Blacksmith", "Commander", "Conscript", "Scholar", "Sentinel", "Striker"], "3rd Party (Kobold / Frog God / Rite)": ["White Necromancer", "Shaman (Kobold)", "Spellcrafter", "Taskshaper", "Time Thief", "Vanguard", "Nightblade"]}, "Vanguard Campaign": {"Fleet Specialists": ["Fleet-Weaver", "Null-Zone Enforcer", "Chronal-Warp Sniper", "Abyssal Boarder", "Symbiotic Hull-Mender"], "Pink Lab": ["Suture's Abomination", "Biomantic Flesh-Grafter"], "Intelligence": ["Sable-Net Phantom", "Memory-Siphon Agent", "Logic-Severer"]}}, "Templates": {"D&D 3.5 (Official)": ["Half-Dragon", "Half-Fiend", "Half-Celestial", "Vampire", "Lycanthrope", "Lich", "Advanced", "Giant", "Fiendish", "Resolute", "Entropic", "Feral", "Graveknight", "Ghost", "Skeletal", "Zombie", "Celestial", "Shadow Creature", "Axiomatic", "Anarchic", "Woodling", "Spellstitched", "Death Knight", "Huecuva", "Mummy", "Tauric", "Insectile", "Multiheaded", "Symbiotic", "Wendigo", "Pseudonatural", "Half-Troll", "Half-Ogre", "Half-Fey", "Half-Illithid", "Half-Vampire", "Half-Elemental", "Monstrous Vampire", "Swarm-Shifter", "Voidmind", "Bone Creature", "Corpse Creature", "Gelatinous", "Wight", "Wraith", "Chimeric", "Element Creature"], "D&D 3.5 (3rd Party)": ["Amalgam (Green Ronin)", "Bipedal (Advanced Bestiary)", "Blood Knight (Advanced Bestiary)", "Bloodfire (Advanced Bestiary)", "Dread Juggernaut (Advanced Bestiary)", "Dread Vampire (Advanced Bestiary)", "Dust Ghoul (Advanced Bestiary)", "Elite (Green Ronin)", "Feral Yowler (Advanced Bestiary)", "Giant (Advanced Bestiary)", "Miniature (Advanced Bestiary)", "Four-Armed (Advanced Bestiary)", "Two-Headed (Advanced Bestiary)", "Half-Plant (Advanced Bestiary)", "Half-Machine (Advanced Bestiary)", "Clockwork (Advanced Bestiary)", "Crystal Creature (Advanced Bestiary)", "Manimal (Advanced Bestiary)", "Monstrous Beast (Advanced Bestiary)", "Night Terror (Advanced Bestiary)", "Plant-Imbued (Advanced Bestiary)", "Poisonous (Advanced Bestiary)", "Primitive (Advanced Bestiary)", "Reptilian (Advanced Bestiary)", "Slime Creature (Advanced Bestiary)", "Swarm-Maddened (Advanced Bestiary)", "Umbral Creature (Advanced Bestiary)", "Warped (Advanced Bestiary)", "Winged (Advanced Bestiary)", "Beast of Chaos (Book of Templates)", "Blood-Drained (Book of Templates)", "Chosen of Nature (Book of Templates)", "Cursed (Book of Templates)", "Fallen (Book of Templates)", "Radiant (Book of Templates)", "Soul-Bound (Book of Templates)"], "Pathfinder 1E (Official)": ["Advanced", "Simple (Celestial)", "Simple (Entropic)", "Simple (Fiendish)", "Simple (Resolute)", "Giant", "Young", "Agile", "Invincible", "Skeletal Champion", "Zombie Lord", "Juju Zombie", "Graveknight", "Worm That Walks", "Vampire (Moroi)", "Vanguard (Nosferatu)", "Vampire (Jiang-shi)", "Nightmare Creature", "Mutant", "Fleshwarped", "Half-Dragon", "Half-Fiend", "Half-Celestial", "Lich", "Ghost", "Mummy", "Trompe L'oeil", "Blighted", "Fungal", "Ghoulish", "Vampiric", "Animal Lord", "Banshee", "Behemoth", "Clockwork", "Crystal", "Cyborg", "Demonic", "Devil-Bound", "Elemental-Infused", "Entothrope", "Fey-Touched", "Fossil", "Kyton-Bound", "Man-Eating", "Plague-Bearing", "Protean-Infused", "Qlippoth-Blighted", "Radioactive", "Runescarred", "Savage", "Shadow-Bound", "Spore-Infected", "Storm-Bound", "Tauric", "Toxic", "Void-Touched"], "Pathfinder 1E (3rd Party)": ["Abominable (Frog God)", "Alchemically-Enhanced (Frog God)", "Blood-Mad (Frog God)", "Bone-Horror (Kobold Press)", "Clockwork-Automaton (Kobold Press)", "Deep-Sea (Kobold Press)", "Desert-Dwelling (Frog God)", "Dream-Haunted (Dreamscarred)", "Ectoplasmic (Dreamscarred)", "Eldritch (Frog God)", "Flesh-Stitched (Frog God)", "Frost-Bound (Kobold Press)", "Grave-Born (Frog God)", "Hell-Forged (Kobold Press)", "Iron-Clad (Frog God)", "Jungle-Dwelling (Frog God)", "Magma-Infused (Kobold Press)", "Mind-Shattered (Dreamscarred)", "Moon-Touched (Kobold Press)", "Necromantic (Frog God)", "Plague-Zombie (Frog God)", "Psionic-Imbued (Dreamscarred)", "Sand-Shaper (Kobold Press)", "Shadow-Stalker (Kobold Press)", "Slime-Coated (Frog God)", "Soul-Eater (Frog God)", "Star-Spawned (Kobold Press)", "Swamp-Dwelling (Frog God)", "Terror-Bird (Frog God)", "Time-Lost (Dreamscarred)", "Void-Creature (Kobold Press)", "Warp-Touched (Frog God)"], "Vanguard Campaign": ["Pink-Lab Augmented", "Null-Scarred", "Chronally-Displaced", "Bureaucratically-Bound", "Fateshorn", "Psionically-Awakened", "Silver-Lattice Infused", "Abyssal-Marked", "Void-Glass Plated", "Null-Warped", "Feral-Indoctrinated"]}, "Origins": ["Original Vael-Kaelor Clan", "Thessalan Captive - Freed", "The Broken Inquisitor", "Pink Lab Survivor", "Chronal Ghost", "Abyssal Dredge", "Bureaucratic Defector", "Awakened Thrall", "Defeated Pirate-Lord", "Sovereign Loyalist", "Street-Urchin Recruit", "Assimilated Noble", "Inquisition Sleeper Agent", "Freed Deep-Water Seraph"], "Origin_Traits": {"Vael_Kaelor": [{"name": "Bloodline of the First Sovereign", "desc": "Telepathy with Sovereign Mark, Fear Immunity"}, {"name": "Echoes of the Shattered World", "desc": "Reverse time by 1 round once per week"}, {"name": "Chronal Resilience", "desc": "+2 save vs time-altering effects"}, {"name": "Ancestral Recall", "desc": "Once per day, massive bonus to a skill check"}, {"name": "Silver-Wood Initiate", "desc": "Free inherent nature SLA"}, {"name": "Veteran's Grit", "desc": "Max HP at first level, +1 to Fortitude saves"}], "Thessalan_Captive": [{"name": "Pneumatic Bone-Lacing", "desc": "+4 to Strength checks, Bones act as Adamantine"}, {"name": "Blood-Stone Core", "desc": "Can channel 1 spell level per HD as temporary HP"}, {"name": "Aberrant Spliced Limb", "desc": "Extra tentacle or claw attack (1d6 damage)"}, {"name": "Alchemical Conduit", "desc": "Immunity to poisons, can secrete acid on weapons"}, {"name": "Mind-Scrubbed", "desc": "Immunity to charm and compulsion effects"}, {"name": "Subdermal Armor Plating", "desc": "+4 Natural Armor Bonus"}, {"name": "Pain-Nullification Node", "desc": "Ignore all penalties from wounds or pain effects"}, {"name": "Acid-Spitter Gland", "desc": "Breath weapon (3d6 acid, 15ft cone) usable 1/day"}, {"name": "Psionic-Resonance Crystals", "desc": "Gain 1 minor psionic talent and 3 power points"}, {"name": "Bio-luminescent Veins", "desc": "Shed light at will, +4 bonus on Intimidate"}, {"name": "Neural-Jack Interface", "desc": "Can interface with Vanguard tech terminals seamlessly"}, {"name": "Venomous Fangs", "desc": "Bite attack delivers a paralytic toxin (Fort save)"}, {"name": "Ocular Sensor Implant", "desc": "Darkvision 120ft and See Invisibility"}, {"name": "Heart of the Leviathan", "desc": "Breathe underwater, Swim speed equal to land speed"}, {"name": "Void-Glass Carapace", "desc": "Spell Resistance equal to 11 + Character Level"}]}, "Roles": [{"name": "Chronal-Gunner", "desc": "Calculates ballistic trajectories across time. Gains +2 on ranged attack rolls; can ignore cover 1/day."}, {"name": "Null-Marine Boarder", "desc": "Shock troop specializing in breaching magic-sealed hulls. Grants Spell Resistance 15 against abjuration magic."}, {"name": "Symbiotic Shipwright", "desc": "Bonds with living ship-tissue. Can repair 3d6 hull damage with a touch, or heal biological allies for 1d8."}, {"name": "Psychic Interrogator", "desc": "Extracts intelligence directly from minds. Can cast Detect Thoughts at will and gains +4 Sense Motive."}, {"name": "Shadow-Wake Navigator", "desc": "Pilots vessels through the Plane of Shadow. Grants the ship +20ft speed in darkness and ignores fog/weather penalties."}, {"name": "Feral Intimidator", "desc": "Breaks morale of captive crews. +4 Intimidate, and enemies within 10ft suffer -1 on saving throws against fear."}, {"name": "Deep-Water Saboteur", "desc": "Infiltrates enemy harbors. Gains Swim speed 30ft and Sneak Attack +1d6 (stacks with existing)."}, {"name": "Bio-Crafter", "desc": "Harvests organs to create temporary combat stims. Can craft 1 free potion/mutagen per day."}, {"name": "Quartermaster", "desc": "Manages fleet logistics. Grants a permanent +1 bonus to the ship's cargo capacity and morale."}, {"name": "Strike-Cell Assassin", "desc": "High-value target elimination. On the first round of combat, movement speed doubles and attacks deal +2d6 precision damage."}, {"name": "Ward-Breaker", "desc": "Specializes in tearing down magical defenses. Gains +4 on Dispel checks and deals double damage to magical constructs."}, {"name": "Leviathan-Hunter", "desc": "Trained to kill gargantuan sea beasts. Deals +2 damage per size category the target is larger than them."}, {"name": "Logic-Severer", "desc": "Disrupts artificial and hive-minds. Mindless or swarm creatures lose immunities to mind-affecting effects from this character."}, {"name": "Silver-Lattice Weaver", "desc": "Creates temporary hard-light defenses. Can project a 10x10ft Wall of Force for 1 round per encounter."}], "Weapons": [{"name": "Memory-Siphon Blade", "desc": "On a critical hit, the target loses 1d4 rounds of memory; you gain +2 insight bonus to AC."}, {"name": "Bio-Rifle", "desc": "Fires acidic/toxic darts. Can be loaded with user's own HP to deal +1d6 damage per HP spent."}, {"name": "Void-Anchor Harpoon", "desc": "Functions as a Returning weapon. Struck targets cannot teleport or use dimensional travel for 1 round."}, {"name": "Dead-Speak Lantern", "desc": "Acts as a flail. Can cast Speak with Dead 1/day on any corpse illuminated by its light."}, {"name": "Coral-Cleaver", "desc": "Adamantine equivalent underwater. Deals +1d6 bleed damage to organic targets."}, {"name": "Null-Rifle", "desc": "Fires concentrated anti-magic rounds. On hit, functions as targeted Dispel Magic (CL 10)."}, {"name": "Kinetic-Gauntlets", "desc": "Unarmed strikes deal 1d8 bludgeoning. Can release a 15ft cone of force (2d6) in place of an attack."}, {"name": "Tri-Weave Focus", "desc": "A crystalline catalyst that grants +1 to spell DCs. Can hold 3 spell levels like a Ring of Spell Storing."}, {"name": "Ironwood Feather-Blades", "desc": "Thrown weapons that deal slashing damage. Can be recalled to hand as a free action."}, {"name": "Silver-Lattice Rapier", "desc": "Bypasses damage reduction as if Silver and Magic. Grants +2 to Parry/Riposte attempts."}, {"name": "Chronal Repeater Crossbow", "desc": "Fires 2 bolts per attack action. 1/day, rewind time to reroll a missed attack."}, {"name": "Acid-Spitter Gland", "desc": "A symbiotic weapon graft. 15ft cone of 3d6 acid, usable every 1d4 rounds."}, {"name": "Void-Salt Grenades", "desc": "Thrown explosive (10ft radius). Deals 3d6 force damage and creates a zone of silence for 1 round."}], "Names_First": ["Kaelen", "Voss", "Mire", "Silas", "Jeren", "Kett", "Vane", "Thorn", "Locke", "Draven", "Riven", "Cade", "Nyx", "Seraph", "Grim", "Vale", "Trench", "Scrape", "Blight", "Sunder", "Onyx", "Sable", "Tor", "Kestrel", "Mirell"], "Names_Title": ["the Butcher", "the Silent", "the Void-Walker", "Blood-Wake", "the Broken", "the Pink Terror", "the Chronal-Ghost", "the Deep-Dredged", "the Null", "the Severed", "the Leviathan's Maw", "the Psionic", "the Unbound", "the Logic-Breaker", "the Iron-Knell", "the Spliced"]};
+        const db = __JSON_DATA__;
         const roster = [];
 
         // Utilities
+        function populateSelectGrouped(elId, groups) {
+            const select = document.getElementById(elId);
+            select.innerHTML = '';
+            for (const [groupName, items] of Object.entries(groups)) {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = groupName;
+                items.forEach(item => {
+                    const isObj = typeof item === 'object';
+                    const opt = document.createElement('option');
+                    opt.value = isObj ? item.name : item;
+                    opt.textContent = isObj ? item.name : item;
+                    optgroup.appendChild(opt);
+                });
+                select.appendChild(optgroup);
+            }
+        }
+        
+        function getRandomFromCategories(catObj) {
+            const catKey = getRandom(Object.keys(catObj));
+            return getRandom(catObj[catKey]);
+        }
+        
+        function getRoleObj(name) {
+            for (const cat in db.Roles) {
+                const found = db.Roles[cat].find(x => x.name === name);
+                if (found) return found;
+            }
+            return null;
+        }
+
         function populateSelect(elId, array) {
             const select = document.getElementById(elId);
             select.innerHTML = '';
@@ -276,28 +362,15 @@
         // --- DYNAMIC ORIGIN PANEL LOGIC (Option C) ---
         const originSelect = document.getElementById('sel-origin');
         const originPanel = document.getElementById('origin-panel');
-        
         function updateOriginPanel() {
             const val = originSelect.value;
             originPanel.innerHTML = '';
             
-            if(val === 'Original Vael-Kaelor Clan') {
+            const traits = db.Origin_Traits[val];
+            if (traits && traits.length > 0) {
                 originPanel.style.display = 'block';
-                let html = '<label style="color:var(--accent-pink); margin-bottom:10px; display:block;">Vael-Kaelor Inherent Bonus (Pick One)</label>';
-                db.Origin_Traits.Vael_Kaelor.forEach((t, i) => {
-                    let id = 'vk-' + i;
-                    html += `<div class="origin-option">
-                                <input type="radio" id="${id}" name="origin-trait" value="${t.name}" ${i===0?'checked':''}> 
-                                <label for="${id}"><strong style="color:var(--text-main)">${t.name}</strong><br>
-                                <small style="color:var(--border-active)">Mechanic: ${t.desc}</small></label>
-                             </div>`;
-                });
-                originPanel.innerHTML = html;
-            } 
-            else if (val === 'Thessalan Captive - Freed') {
-                originPanel.style.display = 'block';
-                let html = '<label style="color:var(--accent-pink); margin-bottom:10px; display:block;">Thessalan Grafts (Select Multiple)</label>';
-                db.Origin_Traits.Thessalan_Captive.forEach((t, i) => {
+                let html = `<label style="color:var(--accent-pink); margin-bottom:10px; display:block;">${val} Traits (Select Multiple)</label>`;
+                traits.forEach((t, i) => {
                     let id = 'tc-' + i;
                     html += `<div class="origin-option">
                                 <input type="checkbox" id="${id}" name="origin-trait-chk" value="${t.name}"> 
@@ -306,15 +379,14 @@
                              </div>`;
                 });
                 originPanel.innerHTML = html;
-            }
-            else {
+            } else {
                 originPanel.style.display = 'none';
             }
-        }
+        }        
         originSelect.addEventListener('change', updateOriginPanel);
         updateOriginPanel();
         
-        populateSelect('sel-role', db.Roles);
+        populateSelectGrouped('sel-role', db.Roles);
         const roleSelect = document.getElementById('sel-role');
         const roleDesc = document.getElementById('role-desc');
         function updateRoleDesc() {
@@ -324,6 +396,49 @@
         }
         roleSelect.addEventListener('change', updateRoleDesc);
         updateRoleDesc();
+        
+        // Initialize Story Weapons
+        const swSelect = document.getElementById('sel-story-weapon');
+        const swPanel = document.getElementById('story-weapon-panel');
+        const swBond = document.getElementById('sw-bond');
+        const swTier = document.getElementById('sw-tier');
+        const swDesc = document.getElementById('sw-desc');
+        
+        swSelect.innerHTML = '<option value="None">None</option>';
+        Object.keys(db.Story_Weapons).forEach(w => {
+            const opt = document.createElement('option');
+            opt.value = w;
+            opt.textContent = w;
+            swSelect.appendChild(opt);
+        });
+        
+        function updateStoryWeapon() {
+            const val = swSelect.value;
+            if (val === "None") {
+                swPanel.style.display = 'none';
+                return;
+            }
+            swPanel.style.display = 'block';
+            
+            const wObj = db.Story_Weapons[val];
+            const isSevered = (swBond.value === 'Severed');
+            
+            if (isSevered) {
+                swTier.disabled = true;
+                swDesc.innerHTML = `<strong>${val} (Severed Bond)</strong><br><em>${wObj.description}</em><br><br><span style="color:#ff2a75">Bond Severed: All special enhancements wiped. Functions as a basic +1 Artifact Weapon.</span>`;
+            } else {
+                swTier.disabled = false;
+                const tier = parseInt(swTier.value);
+                const tierObj = wObj.tiers.find(t => t.level === tier);
+                if (tierObj) {
+                    swDesc.innerHTML = `<strong>${val} (Tier ${tier}: ${tierObj.name})</strong><br><em>${wObj.description}</em><br><br><span style="color:var(--border-active)">Mechanic: ${tierObj.desc}</span>`;
+                }
+            }
+        }
+        
+        swSelect.addEventListener('change', updateStoryWeapon);
+        swBond.addEventListener('change', updateStoryWeapon);
+        swTier.addEventListener('change', updateStoryWeapon);
         
         populateSelect('sel-weapon', db.Weapons);
         const weaponSelect = document.getElementById('sel-weapon');
@@ -403,6 +518,32 @@
 
 
         // --- RANDOM GENERATOR ---
+        function rollD6() { return Math.floor(Math.random() * 6) + 1; }
+        function generateStat(method) {
+            if (method === 'standard') {
+                let rolls = [rollD6(), rollD6(), rollD6(), rollD6()].sort((a,b) => a-b);
+                return rolls[1] + rolls[2] + rolls[3];
+            } else if (method === 'heroic') {
+                return rollD6() + rollD6() + 6;
+            } else {
+                return rollD6() + rollD6() + rollD6();
+            }
+        }
+        function generateStatArray(method) {
+            return [generateStat(method), generateStat(method), generateStat(method), generateStat(method), generateStat(method), generateStat(method)];
+        }
+        
+        document.getElementById('btn-roll-stats').addEventListener('click', () => {
+            const method = document.getElementById('roll-method').value;
+            const stats = generateStatArray(method);
+            document.getElementById('stat-str').value = stats[0];
+            document.getElementById('stat-dex').value = stats[1];
+            document.getElementById('stat-con').value = stats[2];
+            document.getElementById('stat-int').value = stats[3];
+            document.getElementById('stat-wis').value = stats[4];
+            document.getElementById('stat-cha').value = stats[5];
+        });
+
         function getRandomInt(max) { return Math.floor(Math.random() * max); }
         function getRandom(arr) { return arr[getRandomInt(arr.length)]; }
 
@@ -419,7 +560,21 @@
 
         document.getElementById('btn-chaos').addEventListener('click', () => {
             const randWeapon = getRandom(db.Weapons);
-            const randRole = getRandom(db.Roles);
+            const randRole = getRandomFromCategories(db.Roles);
+            let sWeaponText = null;
+            if (document.getElementById('sel-story-weapon').value !== "None") {
+                const swName = document.getElementById('sel-story-weapon').value;
+                const swData = db.Story_Weapons[swName];
+                const isSevered = (document.getElementById('sw-bond').value === 'Severed');
+                if (isSevered) {
+                    sWeaponText = `${swName} (Severed Bond) — ${swData.description} [All bonuses wiped. Reset to basic +1 Artifact Weapon]`;
+                } else {
+                    const tierLvl = parseInt(document.getElementById('sw-tier').value);
+                    const tObj = swData.tiers.find(t => t.level === tierLvl);
+                    sWeaponText = `${swName} (Tier ${tierLvl}: ${tObj.name}) — ${swData.description} [${tObj.desc}]`;
+                }
+            }
+            
             const char = {
                 name: `${getRandom(db.Names_First)} ${getRandom(db.Names_Title)}`,
                 origin: getRandom(db.Origins),
@@ -428,18 +583,16 @@
                 charClass: getRandomFromNested(db.Classes),
                 template: getRandomTemplate(),
                 role: `${randRole.name} — ${randRole.desc}`,
-                weapon: `${randWeapon.name} — ${randWeapon.desc}`
+                weapon: `${randWeapon.name} — ${randWeapon.desc}`,
+                stats: generateStatArray('standard')
             };
-            
-            if(char.origin === 'Original Vael-Kaelor Clan') {
-                const randTrait = getRandom(db.Origin_Traits.Vael_Kaelor);
-                char.originTraits.push(`${randTrait.name} (${randTrait.desc})`);
-            } else if (char.origin === 'Thessalan Captive - Freed') {
-                let numGrafts = 1 + getRandomInt(4);
-                let shuffled = [...db.Origin_Traits.Thessalan_Captive].sort(() => 0.5 - Math.random());
+            if (db.Origin_Traits[char.origin]) {
+                let traits = db.Origin_Traits[char.origin];
+                let numGrafts = 1 + getRandomInt(Math.min(3, traits.length));
+                let shuffled = [...traits].sort(() => 0.5 - Math.random());
                 const selected = shuffled.slice(0, numGrafts);
                 selected.forEach(t => char.originTraits.push(`${t.name} (${t.desc})`));
-            }
+            }            
             
             roster.push(char);
             renderRoster();
@@ -448,21 +601,18 @@
         // --- MANUAL DRAFT ---
         function getOriginTraits() {
             const val = document.getElementById('sel-origin').value;
-            let traits = [];
-            if(val === 'Original Vael-Kaelor Clan') {
-                const checked = document.querySelector('input[name="origin-trait"]:checked');
-                if(checked) {
-                    const trait = db.Origin_Traits.Vael_Kaelor.find(t => t.name === checked.value);
-                    traits.push(`${trait.name} (${trait.desc})`);
-                }
-            } else if (val === 'Thessalan Captive - Freed') {
+            let chosenTraits = [];
+            
+            if (db.Origin_Traits[val]) {
                 const checks = document.querySelectorAll('input[name="origin-trait-chk"]:checked');
                 checks.forEach(c => {
-                    const trait = db.Origin_Traits.Thessalan_Captive.find(t => t.name === c.value);
-                    traits.push(`${trait.name} (${trait.desc})`);
+                    const trait = db.Origin_Traits[val].find(t => t.name === c.value);
+                    if (trait) {
+                        chosenTraits.push(`${trait.name} (${trait.desc})`);
+                    }
                 });
             }
-            return traits;
+            return chosenTraits;
         }
         
         document.getElementById('btn-draft').addEventListener('click', () => {
@@ -473,7 +623,21 @@
             const wObj = db.Weapons.find(x => x.name === wName);
             
             const rName = document.getElementById('sel-role').value;
-            const rObj = db.Roles.find(x => x.name === rName);
+            const rObj = getRoleObj(rName);
+            
+            let sWeaponText = null;
+            if (document.getElementById('sel-story-weapon').value !== "None") {
+                const swName = document.getElementById('sel-story-weapon').value;
+                const swData = db.Story_Weapons[swName];
+                const isSevered = (document.getElementById('sw-bond').value === 'Severed');
+                if (isSevered) {
+                    sWeaponText = `${swName} (Severed Bond) — ${swData.description} [All bonuses wiped. Reset to basic +1 Artifact Weapon]`;
+                } else {
+                    const tierLvl = parseInt(document.getElementById('sw-tier').value);
+                    const tObj = swData.tiers.find(t => t.level === tierLvl);
+                    sWeaponText = `${swName} (Tier ${tierLvl}: ${tObj.name}) — ${swData.description} [${tObj.desc}]`;
+                }
+            }
             
             const char = {
                 name: customName,
@@ -483,7 +647,15 @@
                 charClass: document.getElementById('class-input').value || "Unknown Class",
                 template: document.getElementById('tpl-input').value || "None",
                 role: rObj ? `${rObj.name} — ${rObj.desc}` : rName,
-                weapon: wObj ? `${wObj.name} — ${wObj.desc}` : wName
+                weapon: wObj ? `${wObj.name} — ${wObj.desc}` : wName,
+                stats: [
+                    document.getElementById('stat-str').value || 10,
+                    document.getElementById('stat-dex').value || 10,
+                    document.getElementById('stat-con').value || 10,
+                    document.getElementById('stat-int').value || 10,
+                    document.getElementById('stat-wis').value || 10,
+                    document.getElementById('stat-cha').value || 10
+                ]
             };
             roster.push(char);
             renderRoster();
@@ -513,6 +685,14 @@
                         ${char.originTraits && char.originTraits.length > 0 ? '<strong>Origin Traits:</strong> <em>' + char.originTraits.join(', ') + '</em><br>' : ''}
                         <strong>Role:</strong> ${char.role}<br>
                         <strong>Weapon:</strong> ${char.weapon}
+                        <div style="margin-top: 8px; background: rgba(0,0,0,0.4); padding: 5px; border-radius: 4px; display:flex; justify-content:space-around; text-align:center;">
+                            <span><small style="color:var(--accent-pink)">STR</small><br><b style="color:#fff">${char.stats[0]}</b></span>
+                            <span><small style="color:var(--accent-pink)">DEX</small><br><b style="color:#fff">${char.stats[1]}</b></span>
+                            <span><small style="color:var(--accent-pink)">CON</small><br><b style="color:#fff">${char.stats[2]}</b></span>
+                            <span><small style="color:var(--accent-pink)">INT</small><br><b style="color:#fff">${char.stats[3]}</b></span>
+                            <span><small style="color:var(--accent-pink)">WIS</small><br><b style="color:#fff">${char.stats[4]}</b></span>
+                            <span><small style="color:var(--accent-pink)">CHA</small><br><b style="color:#fff">${char.stats[5]}</b></span>
+                        </div>
                     </div>
                 `;
                 list.prepend(card);
@@ -530,7 +710,9 @@
                 md += `* **Origin:** ${c.origin}\n`;
                 if(c.originTraits && c.originTraits.length > 0) md += `* **Origin Traits:** ${c.originTraits.join('; ')}\n`;
                 md += `* **Fleet Role:** ${c.role}\n`;
-                md += `* **Signature Weapon:** ${c.weapon}\n\n`;
+                md += `* **Signature Weapon:** ${c.weapon}\n`;
+                if(c.stats) md += `* **Attributes:** STR ${c.stats[0]} | DEX ${c.stats[1]} | CON ${c.stats[2]} | INT ${c.stats[3]} | WIS ${c.stats[4]} | CHA ${c.stats[5]}\n\n`;
+                else md += `\n`;
                 md += `***\n\n`;
             });
             
