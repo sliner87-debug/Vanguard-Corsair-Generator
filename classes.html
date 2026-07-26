@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vanguard Campaign SRD - Custom Classes</title>
     <style>
+        /* CSS remains the same */
         :root {
             --bg-color: #090c10;
             --text-main: #c9d1d9;
@@ -24,7 +25,6 @@
             padding: 0;
             display: flex;
         }
-        /* Sidebar */
         .sidebar {
             width: 260px;
             background: var(--card-bg);
@@ -50,12 +50,21 @@
             align-items: center;
             gap: 10px;
         }
+        .sidebar h3 {
+            color: #fff;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 5px;
+        }
         .sidebar ul {
             list-style: none;
             padding: 0;
+            margin: 0;
         }
         .sidebar li {
-            margin: 12px 0;
+            margin: 8px 0;
         }
         .sidebar a {
             color: var(--text-main);
@@ -72,7 +81,6 @@
             text-shadow: var(--accent-glow);
             box-shadow: inset 2px 0 0 var(--accent);
         }
-        /* Main Content */
         .content {
             margin-left: 310px;
             padding: 50px;
@@ -177,6 +185,15 @@
 
     <div class="sidebar">
         <h2>📖 Vanguard SRD</h2>
+        
+        <h3>ShadowNet Tiers</h3>
+        <ul>
+            <li><a href="#shadownet-apprentice">ShadowNet Apprentice</a></li>
+            <li><a href="#shadownet-operative">ShadowNet Operative</a></li>
+            <li><a href="#shadownet-weaver-high-tier">ShadowNet Weaver (High Tier)</a></li>
+            <li><a href="#shadownet-zenith-final-tier">ShadowNet Zenith (Final Tier)</a></li>
+        </ul>
+        <h3>Classes</h3>
         <ul>
             <li><a href="#fleet-weaver">Fleet-Weaver</a></li>
             <li><a href="#null-zone-enforcer">Null-Zone Enforcer</a></li>
@@ -192,6 +209,33 @@
     </div>
 
     <div class="content">
+        <div class="class-section" style="border-color: #8e153f;">
+            <h1 style="color: #ff2a75; text-shadow: 0 0 15px rgba(255,42,117,0.6); border-bottom-color: rgba(255,42,117,0.2);">ShadowNet Ranked Tiers</h1>
+            <div class="desc">These progression tiers represent ascension within the elusive ShadowNet hierarchy. Characters gain these traits in addition to their class features.</div>
+            <h2 id="shadownet-apprentice" style="color: #ff2a75; margin-top: 40px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">ShadowNet Apprentice</h2>
+            <div class="ability-list">
+                <div class="ability-item" style="border-left-color: #ff2a75;"><span class="ability-name" style="color: #ff2a75;">Network Initiate</span><br> +2 on Knowledge (Local) and Arcana/Clockwork checks via basic aetheric interfacing.</div>
+                <div class="ability-item" style="border-left-color: #ff2a75;"><span class="ability-name" style="color: #ff2a75;">Flicker-Cloak</span><br> Activate a personal cloaking field (Invisibility) for 1 round, 1/day.</div>
+                <div class="ability-item" style="border-left-color: #ff2a75;"><span class="ability-name" style="color: #ff2a75;">Mind-Tap</span><br> Extract superficial warded data from an clockwork device with a physical mind-link.</div>
+            </div>
+            <h2 id="shadownet-operative" style="color: #ff2a75; margin-top: 40px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">ShadowNet Operative</h2>
+            <div class="ability-list">
+                <div class="ability-item" style="border-left-color: #ff2a75;"><span class="ability-name" style="color: #ff2a75;">Spire-Walker</span><br> Ignore difficult terrain in urban environments using grav-glyphs.</div>
+                <div class="ability-item" style="border-left-color: #ff2a75;"><span class="ability-name" style="color: #ff2a75;">Ghost-Override</span><br> 1/day, magically override an enemy golem or clockwork for 1 round (Will save negates).</div>
+                <div class="ability-item" style="border-left-color: #ff2a75;"><span class="ability-name" style="color: #ff2a75;">Silent-Caster Suppressor</span><br> Sneak attack deals +1d6 damage, and victims are caught in a localized silence field for 1 round, unable to cry out.</div>
+            </div>
+            <h2 id="shadownet-weaver-high-tier" style="color: #ff2a75; margin-top: 40px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">ShadowNet Weaver (High Tier)</h2>
+            <div class="ability-list">
+                <div class="ability-item" style="border-left-color: #ff2a75;"><span class="ability-name" style="color: #ff2a75;">Sovereign's Veil</span><br> Abjuration jamming grants Spell Resistance equal to 10 + Character Level against Divination and Enchantment.</div>
+                <div class="ability-item" style="border-left-color: #ff2a75;"><span class="ability-name" style="color: #ff2a75;">Override Command</span><br> Hack a biological target's mind, casting Dominate Person 1/day.</div>
+                <div class="ability-item" style="border-left-color: #ff2a75;"><span class="ability-name" style="color: #ff2a75;">Neural Feedback Loop</span><br> Anyone attempting to read your mind or hack your grafts takes 3d6 psychic damage.</div>
+            </div>
+            <h2 id="shadownet-zenith-final-tier" style="color: #ff2a75; margin-top: 40px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">ShadowNet Zenith (Final Tier)</h2>
+            <div class="ability-list">
+                <div class="ability-item" style="border-left-color: #ff2a75;"><span class="ability-name" style="color: #ff2a75;">Absolute Banishment Sigil</span><br> 1/day, shunt a target out of reality into a astral buffer for 1d4 rounds (acts as Maze or Banishment).</div>
+                <div class="ability-item" style="border-left-color: #ff2a75;"><span class="ability-name" style="color: #ff2a75;">Omnipresence Precognition</span><br> Precognitive combat flashes allow you to act in the surprise round and gain +4 to Initiative.</div>
+            </div>
+        </div>
         <div id="fleet-weaver" class="class-section">
             <h1>Fleet-Weaver</h1>
             <div class="desc">High-powered esoteric navigators capable of bending space, teleporting through ship hulls, and warping the battlefield.</div>
