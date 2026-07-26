@@ -364,7 +364,8 @@
             if (!term || term === 'None') return;
             
             if (sys === 'Vanguard Campaign') {
-                alert("Vanguard Campaign content is custom to this setting. Please refer to your campaign documentation, or for Vanguard Classes, click the Scroll icon (📜) to view details.");
+                let anchor = cls.replace(/\s+/g, '-').replace(/'/g, '').toLowerCase();
+                window.open('classes.html#' + anchor, '_blank');
                 return;
             }
             
