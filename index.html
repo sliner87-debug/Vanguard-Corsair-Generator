@@ -289,9 +289,17 @@
         const roster = [];
 
         // Utilities
+        function unescapeHTML(str) {
+            const txt = document.createElement("textarea");
+            txt.innerHTML = str;
+            return txt.value;
+        }
+
         function populateSelectGrouped(elId, groups) {
             const select = document.getElementById(elId);
+            if (!select) return;
             select.innerHTML = '';
+            if (!groups) return;
             for (const [groupName, items] of Object.entries(groups)) {
                 const optgroup = document.createElement('optgroup');
                 optgroup.label = groupName;
@@ -307,11 +315,13 @@
         }
         
         function getRandomFromCategories(catObj) {
+            if (!catObj) return null;
             const catKey = getRandom(Object.keys(catObj));
             return getRandom(catObj[catKey]);
         }
         
         function getRoleObj(name) {
+            if (!db.Roles) return null;
             for (const cat in db.Roles) {
                 const found = db.Roles[cat].find(x => x.name === name);
                 if (found) return found;
@@ -321,7 +331,9 @@
 
         function populateSelect(elId, array) {
             const select = document.getElementById(elId);
+            if (!select) return;
             select.innerHTML = '';
+            if (!array) return;
             array.forEach(item => {
                 const isObj = typeof item === 'object';
                 const opt = document.createElement('option');
@@ -330,9 +342,12 @@
                 select.appendChild(opt);
             });
         }
+        
         function populateDatalist(elId, array) {
             const dl = document.getElementById(elId);
+            if (!dl) return;
             dl.innerHTML = '';
+            if (!array) return;
             array.forEach(item => {
                 const opt = document.createElement('option');
                 opt.value = item;
@@ -340,11 +355,18 @@
             });
         }
 
-        // --- SRD LINK LOGIC (Option A) ---
+        // --- SRD LINK LOGIC ---
         function openSRD(sysId, inputId) {
-            const sys = document.getElementById(sysId).value;
+            const sysRaw = document.getElementById(sysId).value;
+            const sys = unescapeHTML(sysRaw);
             const term = document.getElementById(inputId).value;
-            if (!term || term === 'None' || sys === 'Vanguard Campaign') return;
+            
+            if (!term || term === 'None') return;
+            
+            if (sys === 'Vanguard Campaign') {
+                alert("Vanguard Campaign content is custom to this setting. Please refer to your campaign documentation, or for Vanguard Classes, click the Scroll icon (📜) to view details.");
+                return;
+            }
             
             let query = term;
             if (sys.includes("Pathfinder")) {
@@ -360,14 +382,14 @@
         // Initialize Base Dropdowns
         populateSelect('sel-origin', db.Origins);
         
-        // --- DYNAMIC ORIGIN PANEL LOGIC (Option C) ---
+        // --- DYNAMIC ORIGIN PANEL LOGIC ---
         const originSelect = document.getElementById('sel-origin');
         const originPanel = document.getElementById('origin-panel');
         function updateOriginPanel() {
             const val = originSelect.value;
             originPanel.innerHTML = '';
             
-            const traits = db.Origin_Traits[val];
+            const traits = db.Origin_Traits ? db.Origin_Traits[val] : null;
             if (traits && traits.length > 0) {
                 originPanel.style.display = 'block';
                 let html = `<label style="color:var(--accent-pink); margin-bottom:10px; display:block;">${val} Traits (Select Multiple)</label>`;
@@ -384,8 +406,10 @@
                 originPanel.style.display = 'none';
             }
         }        
-        originSelect.addEventListener('change', updateOriginPanel);
-        updateOriginPanel();
+        if (originSelect) {
+            originSelect.addEventListener('change', updateOriginPanel);
+            updateOriginPanel();
+        }
         
         populateSelectGrouped('sel-role', db.Roles);
         const roleSelect = document.getElementById('sel-role');
@@ -393,10 +417,14 @@
         function updateRoleDesc() {
             const val = roleSelect.value;
             const r = getRoleObj(val);
-            roleDesc.innerHTML = r ? `<em>Mechanic: ${r.desc}</em>` : '';
+            if (roleDesc) {
+                roleDesc.innerHTML = r ? `<em>Mechanic: ${r.desc}</em>` : '';
+            }
         }
-        roleSelect.addEventListener('change', updateRoleDesc);
-        updateRoleDesc();
+        if (roleSelect) {
+            roleSelect.addEventListener('change', updateRoleDesc);
+            updateRoleDesc();
+        }
         
         // Initialize Story Weapons
         const swSelect = document.getElementById('sel-story-weapon');
@@ -405,117 +433,143 @@
         const swTier = document.getElementById('sw-tier');
         const swDesc = document.getElementById('sw-desc');
         
-        swSelect.innerHTML = '<option value="None">None</option>';
-        Object.keys(db.Story_Weapons).forEach(w => {
-            const opt = document.createElement('option');
-            opt.value = w;
-            opt.textContent = w;
-            swSelect.appendChild(opt);
-        });
-        
-        function updateStoryWeapon() {
-            const val = swSelect.value;
-            if (val === "None") {
-                swPanel.style.display = 'none';
-                return;
-            }
-            swPanel.style.display = 'block';
+        if (swSelect && db.Story_Weapons) {
+            swSelect.innerHTML = '<option value="None">None</option>';
+            Object.keys(db.Story_Weapons).forEach(w => {
+                const opt = document.createElement('option');
+                opt.value = w;
+                opt.textContent = w;
+                swSelect.appendChild(opt);
+            });
             
-            const wObj = db.Story_Weapons[val];
-            const isSevered = (swBond.value === 'Severed');
-            
-            if (isSevered) {
-                swTier.disabled = true;
-                swDesc.innerHTML = `<strong>${val} (Severed Bond)</strong><br><em>${wObj.description}</em><br><br><span style="color:#ff2a75">Bond Severed: All special enhancements wiped. Functions as a basic +1 Artifact Weapon.</span>`;
-            } else {
-                swTier.disabled = false;
-                const tier = parseInt(swTier.value);
-                const tierObj = wObj.tiers.find(t => t.level === tier);
-                if (tierObj) {
-                    swDesc.innerHTML = `<strong>${val} (Tier ${tier}: ${tierObj.name})</strong><br><em>${wObj.description}</em><br><br><span style="color:var(--border-active)">Mechanic: ${tierObj.desc}</span>`;
+            function updateStoryWeapon() {
+                const val = swSelect.value;
+                if (val === "None") {
+                    swPanel.style.display = 'none';
+                    return;
+                }
+                swPanel.style.display = 'block';
+                
+                const wObj = db.Story_Weapons[val];
+                const isSevered = (swBond.value === 'Severed');
+                
+                if (isSevered) {
+                    swTier.disabled = true;
+                    swDesc.innerHTML = `<strong>${val} (Severed Bond)</strong><br><em>${wObj.description}</em><br><br><span style="color:#ff2a75">Bond Severed: All special enhancements wiped. Functions as a basic +1 Artifact Weapon.</span>`;
+                } else {
+                    swTier.disabled = false;
+                    const tier = parseInt(swTier.value);
+                    const tierObj = wObj.tiers.find(t => t.level === tier);
+                    if (tierObj) {
+                        swDesc.innerHTML = `<strong>${val} (Tier ${tier}: ${tierObj.name})</strong><br><em>${wObj.description}</em><br><br><span style="color:var(--border-active)">Mechanic: ${tierObj.desc}</span>`;
+                    }
                 }
             }
+            
+            swSelect.addEventListener('change', updateStoryWeapon);
+            swBond.addEventListener('change', updateStoryWeapon);
+            swTier.addEventListener('change', updateStoryWeapon);
         }
-        
-        swSelect.addEventListener('change', updateStoryWeapon);
-        swBond.addEventListener('change', updateStoryWeapon);
-        swTier.addEventListener('change', updateStoryWeapon);
         
         populateSelect('sel-weapon', db.Weapons);
         const weaponSelect = document.getElementById('sel-weapon');
         const weaponDesc = document.getElementById('weapon-desc');
         function updateWeaponDesc() {
             const val = weaponSelect.value;
-            const w = db.Weapons.find(x => x.name === val);
-            weaponDesc.innerHTML = w ? `<em>Effect: ${w.desc}</em>` : '';
+            const w = db.Weapons ? db.Weapons.find(x => x.name === val) : null;
+            if (weaponDesc) {
+                weaponDesc.innerHTML = w ? `<em>Effect: ${w.desc}</em>` : '';
+            }
         }
-        weaponSelect.addEventListener('change', updateWeaponDesc);
-        updateWeaponDesc();
+        if (weaponSelect) {
+            weaponSelect.addEventListener('change', updateWeaponDesc);
+            updateWeaponDesc();
+        }
 
         // --- CASCADING LOGIC FOR RACES ---
         const rSys = document.getElementById('race-sys');
         const rCat = document.getElementById('race-cat');
         const rInp = document.getElementById('race-input');
         
-        populateSelect('race-sys', Object.keys(db.Races));
-        
-        function updateRaceCats() {
-            const sys = rSys.value;
-            const cats = Object.keys(db.Races[sys]);
-            populateSelect('race-cat', cats);
-            updateRaceList();
+        if (rSys && db.Races) {
+            populateSelect('race-sys', Object.keys(db.Races));
+            
+            function updateRaceCats() {
+                try {
+                    const sys = unescapeHTML(rSys.value);
+                    const sysData = db.Races[sys] || {};
+                    const cats = Object.keys(sysData);
+                    populateSelect('race-cat', cats);
+                    updateRaceList();
+                } catch(e) { console.error("Error in updateRaceCats:", e); }
+            }
+            function updateRaceList() {
+                try {
+                    const sys = unescapeHTML(rSys.value);
+                    const cat = unescapeHTML(rCat.value);
+                    const sysData = db.Races[sys] || {};
+                    const list = sysData[cat] ? [...new Set(sysData[cat])] : [];
+                    populateDatalist('race-list', list);
+                    if(list.length > 0) rInp.value = list[0]; 
+                } catch(e) { console.error("Error in updateRaceList:", e); }
+            }
+            
+            rSys.addEventListener('change', updateRaceCats);
+            rCat.addEventListener('change', updateRaceList);
+            updateRaceCats();
         }
-        function updateRaceList() {
-            const sys = rSys.value;
-            const cat = rCat.value;
-            const list = [...new Set(db.Races[sys][cat])];
-            populateDatalist('race-list', list);
-            rInp.value = list[0]; 
-        }
-        
-        rSys.addEventListener('change', updateRaceCats);
-        rCat.addEventListener('change', updateRaceList);
-        updateRaceCats();
 
         // --- CASCADING LOGIC FOR CLASSES ---
         const cSys = document.getElementById('class-sys');
         const cCat = document.getElementById('class-cat');
         const cInp = document.getElementById('class-input');
         
-        populateSelect('class-sys', Object.keys(db.Classes));
-        
-        function updateClassCats() {
-            const sys = cSys.value;
-            const cats = Object.keys(db.Classes[sys]);
-            populateSelect('class-cat', cats);
-            updateClassList();
+        if (cSys && db.Classes) {
+            populateSelect('class-sys', Object.keys(db.Classes));
+            
+            function updateClassCats() {
+                try {
+                    const sys = unescapeHTML(cSys.value);
+                    const sysData = db.Classes[sys] || {};
+                    const cats = Object.keys(sysData);
+                    populateSelect('class-cat', cats);
+                    updateClassList();
+                } catch(e) { console.error("Error in updateClassCats:", e); }
+            }
+            function updateClassList() {
+                try {
+                    const sys = unescapeHTML(cSys.value);
+                    const cat = unescapeHTML(cCat.value);
+                    const sysData = db.Classes[sys] || {};
+                    const list = sysData[cat] ? [...new Set(sysData[cat])] : [];
+                    populateDatalist('class-list', list);
+                    if (list.length > 0) cInp.value = list[0]; 
+                } catch(e) { console.error("Error in updateClassList:", e); }
+            }
+            
+            cSys.addEventListener('change', updateClassCats);
+            cCat.addEventListener('change', updateClassList);
+            updateClassCats();
         }
-        function updateClassList() {
-            const sys = cSys.value;
-            const cat = cCat.value;
-            const list = db.Classes[sys][cat];
-            populateDatalist('class-list', list);
-            cInp.value = list[0]; 
-        }
-        
-        cSys.addEventListener('change', updateClassCats);
-        cCat.addEventListener('change', updateClassList);
-        updateClassCats();
 
         // --- CASCADING LOGIC FOR TEMPLATES ---
         const tSys = document.getElementById('tpl-sys');
         const tInp = document.getElementById('tpl-input');
         
-        populateSelect('tpl-sys', Object.keys(db.Templates));
-        
-        function updateTplList() {
-            const sys = tSys.value;
-            const list = db.Templates[sys];
-            populateDatalist('tpl-list', list);
-            tInp.value = list[0];
+        if (tSys && db.Templates) {
+            populateSelect('tpl-sys', Object.keys(db.Templates));
+            
+            function updateTplList() {
+                try {
+                    const sys = unescapeHTML(tSys.value);
+                    const list = db.Templates[sys] || [];
+                    populateDatalist('tpl-list', list);
+                    if (list.length > 0) tInp.value = list[0];
+                } catch(e) { console.error("Error in updateTplList:", e); }
+            }
+            tSys.addEventListener('change', updateTplList);
+            updateTplList();
         }
-        tSys.addEventListener('change', updateTplList);
-        updateTplList();
 
 
         // --- RANDOM GENERATOR ---
@@ -534,77 +588,85 @@
             return [generateStat(method), generateStat(method), generateStat(method), generateStat(method), generateStat(method), generateStat(method)];
         }
         
-        document.getElementById('btn-roll-stats').addEventListener('click', () => {
-            const method = document.getElementById('roll-method').value;
-            const stats = generateStatArray(method);
-            document.getElementById('stat-str').value = stats[0];
-            document.getElementById('stat-dex').value = stats[1];
-            document.getElementById('stat-con').value = stats[2];
-            document.getElementById('stat-int').value = stats[3];
-            document.getElementById('stat-wis').value = stats[4];
-            document.getElementById('stat-cha').value = stats[5];
-        });
+        const btnRollStats = document.getElementById('btn-roll-stats');
+        if (btnRollStats) {
+            btnRollStats.addEventListener('click', () => {
+                const method = document.getElementById('roll-method').value;
+                const stats = generateStatArray(method);
+                document.getElementById('stat-str').value = stats[0];
+                document.getElementById('stat-dex').value = stats[1];
+                document.getElementById('stat-con').value = stats[2];
+                document.getElementById('stat-int').value = stats[3];
+                document.getElementById('stat-wis').value = stats[4];
+                document.getElementById('stat-cha').value = stats[5];
+                
+                // Visual feedback
+                const origText = btnRollStats.innerHTML;
+                btnRollStats.innerHTML = "Roll Attributes (Rolled!)";
+                btnRollStats.style.backgroundColor = "var(--accent-cyan)";
+                btnRollStats.style.color = "#000";
+                setTimeout(() => {
+                    btnRollStats.innerHTML = origText;
+                    btnRollStats.style.backgroundColor = "";
+                    btnRollStats.style.color = "";
+                }, 1000);
+            });
+        }
 
         function getRandomInt(max) { return Math.floor(Math.random() * max); }
-        function getRandom(arr) { return arr[getRandomInt(arr.length)]; }
+        function getRandom(arr) { if(!arr || !arr.length) return null; return arr[getRandomInt(arr.length)]; }
 
         function getRandomFromNested(nestedObj) {
+            if(!nestedObj) return null;
             const sysKey = getRandom(Object.keys(nestedObj));
+            if(!sysKey) return null;
             const catKey = getRandom(Object.keys(nestedObj[sysKey]));
-            const item = getRandom(nestedObj[sysKey][catKey]);
-            return item;
+            if(!catKey) return null;
+            return getRandom(nestedObj[sysKey][catKey]);
         }
         function getRandomTemplate() {
+            if(!db.Templates) return "None";
             const sysKey = getRandom(Object.keys(db.Templates));
             return getRandom(db.Templates[sysKey]);
         }
 
-        document.getElementById('btn-chaos').addEventListener('click', () => {
-            const randWeapon = getRandom(db.Weapons);
-            const randRole = getRandomFromCategories(db.Roles);
-            let sWeaponText = null;
-            if (document.getElementById('sel-story-weapon').value !== "None") {
-                const swName = document.getElementById('sel-story-weapon').value;
-                const swData = db.Story_Weapons[swName];
-                const isSevered = (document.getElementById('sw-bond').value === 'Severed');
-                if (isSevered) {
-                    sWeaponText = `${swName} (Severed Bond) — ${swData.description} [All bonuses wiped. Reset to basic +1 Artifact Weapon]`;
-                } else {
-                    const tierLvl = parseInt(document.getElementById('sw-tier').value);
-                    const tObj = swData.tiers.find(t => t.level === tierLvl);
-                    sWeaponText = `${swName} (Tier ${tierLvl}: ${tObj.name}) — ${swData.description} [${tObj.desc}]`;
-                }
-            }
-            
-            const char = {
-                name: `${getRandom(db.Names_First)} ${getRandom(db.Names_Title)}`,
-                origin: getRandom(db.Origins),
-                originTraits: [],
-                race: getRandomFromNested(db.Races),
-                charClass: getRandomFromNested(db.Classes),
-                template: getRandomTemplate(),
-                role: `${randRole.name} — ${randRole.desc}`,
-                weapon: `${randWeapon.name} — ${randWeapon.desc}`,
-                stats: generateStatArray('standard')
-            };
-            if (db.Origin_Traits[char.origin]) {
-                let traits = db.Origin_Traits[char.origin];
-                let numGrafts = 1 + getRandomInt(Math.min(3, traits.length));
-                let shuffled = [...traits].sort(() => 0.5 - Math.random());
-                const selected = shuffled.slice(0, numGrafts);
-                selected.forEach(t => char.originTraits.push(`${t.name} (${t.desc})`));
-            }            
-            
-            roster.push(char);
-            renderRoster();
-        });
+        const btnChaos = document.getElementById('btn-chaos');
+        if (btnChaos) {
+            btnChaos.addEventListener('click', () => {
+                const randWeapon = getRandom(db.Weapons) || {name: "Unknown", desc: ""};
+                const randRole = getRandomFromCategories(db.Roles) || {name: "Unknown", desc: ""};
+                
+                const char = {
+                    name: `${getRandom(db.Names_First) || 'Unknown'} ${getRandom(db.Names_Title) || 'Entity'}`,
+                    origin: getRandom(db.Origins) || "Unknown",
+                    originTraits: [],
+                    race: getRandomFromNested(db.Races) || "Unknown",
+                    charClass: getRandomFromNested(db.Classes) || "Unknown",
+                    template: getRandomTemplate() || "None",
+                    role: `${randRole.name} — ${randRole.desc}`,
+                    weapon: `${randWeapon.name} — ${randWeapon.desc}`,
+                    stats: generateStatArray('standard')
+                };
+                
+                if (db.Origin_Traits && db.Origin_Traits[char.origin]) {
+                    let traits = db.Origin_Traits[char.origin];
+                    let numGrafts = 1 + getRandomInt(Math.min(3, traits.length));
+                    let shuffled = [...traits].sort(() => 0.5 - Math.random());
+                    const selected = shuffled.slice(0, numGrafts);
+                    selected.forEach(t => char.originTraits.push(`${t.name} (${t.desc})`));
+                }            
+                
+                roster.push(char);
+                renderRoster();
+            });
+        }
 
         // --- MANUAL DRAFT ---
         function getOriginTraits() {
             const val = document.getElementById('sel-origin').value;
             let chosenTraits = [];
             
-            if (db.Origin_Traits[val]) {
+            if (db.Origin_Traits && db.Origin_Traits[val]) {
                 const checks = document.querySelectorAll('input[name="origin-trait-chk"]:checked');
                 checks.forEach(c => {
                     const trait = db.Origin_Traits[val].find(t => t.name === c.value);
@@ -616,62 +678,53 @@
             return chosenTraits;
         }
         
-        document.getElementById('btn-draft').addEventListener('click', () => {
-            let customName = document.getElementById('custom-name').value.trim();
-            if(!customName) customName = `${getRandom(db.Names_First)} ${getRandom(db.Names_Title)}`;
-            
-            const wName = document.getElementById('sel-weapon').value;
-            const wObj = db.Weapons.find(x => x.name === wName);
-            
-            const rName = document.getElementById('sel-role').value;
-            const rObj = getRoleObj(rName);
-            
-            let sWeaponText = null;
-            if (document.getElementById('sel-story-weapon').value !== "None") {
-                const swName = document.getElementById('sel-story-weapon').value;
-                const swData = db.Story_Weapons[swName];
-                const isSevered = (document.getElementById('sw-bond').value === 'Severed');
-                if (isSevered) {
-                    sWeaponText = `${swName} (Severed Bond) — ${swData.description} [All bonuses wiped. Reset to basic +1 Artifact Weapon]`;
-                } else {
-                    const tierLvl = parseInt(document.getElementById('sw-tier').value);
-                    const tObj = swData.tiers.find(t => t.level === tierLvl);
-                    sWeaponText = `${swName} (Tier ${tierLvl}: ${tObj.name}) — ${swData.description} [${tObj.desc}]`;
-                }
-            }
-            
-            const char = {
-                name: customName,
-                origin: document.getElementById('sel-origin').value,
-                originTraits: getOriginTraits(),
-                race: document.getElementById('race-input').value || "Unknown Race",
-                charClass: document.getElementById('class-input').value || "Unknown Class",
-                template: document.getElementById('tpl-input').value || "None",
-                role: rObj ? `${rObj.name} — ${rObj.desc}` : rName,
-                weapon: wObj ? `${wObj.name} — ${wObj.desc}` : wName,
-                stats: [
-                    document.getElementById('stat-str').value || 10,
-                    document.getElementById('stat-dex').value || 10,
-                    document.getElementById('stat-con').value || 10,
-                    document.getElementById('stat-int').value || 10,
-                    document.getElementById('stat-wis').value || 10,
-                    document.getElementById('stat-cha').value || 10
-                ]
-            };
-            roster.push(char);
-            renderRoster();
-            
-            document.getElementById('custom-name').value = '';
-        });
+        const btnDraft = document.getElementById('btn-draft');
+        if (btnDraft) {
+            btnDraft.addEventListener('click', () => {
+                let customName = document.getElementById('custom-name').value.trim();
+                if(!customName) customName = `${getRandom(db.Names_First) || 'Unknown'} ${getRandom(db.Names_Title) || ''}`;
+                
+                const wName = document.getElementById('sel-weapon').value;
+                const wObj = db.Weapons ? db.Weapons.find(x => x.name === wName) : null;
+                
+                const rName = document.getElementById('sel-role').value;
+                const rObj = getRoleObj(rName);
+                
+                const char = {
+                    name: customName,
+                    origin: document.getElementById('sel-origin').value || "Unknown",
+                    originTraits: getOriginTraits(),
+                    race: document.getElementById('race-input').value || "Unknown Race",
+                    charClass: document.getElementById('class-input').value || "Unknown Class",
+                    template: document.getElementById('tpl-input').value || "None",
+                    role: rObj ? `${rObj.name} — ${rObj.desc}` : rName,
+                    weapon: wObj ? `${wObj.name} — ${wObj.desc}` : wName,
+                    stats: [
+                        document.getElementById('stat-str').value || 10,
+                        document.getElementById('stat-dex').value || 10,
+                        document.getElementById('stat-con').value || 10,
+                        document.getElementById('stat-int').value || 10,
+                        document.getElementById('stat-wis').value || 10,
+                        document.getElementById('stat-cha').value || 10
+                    ]
+                };
+                roster.push(char);
+                renderRoster();
+                
+                document.getElementById('custom-name').value = '';
+            });
+        }
 
         // --- ROSTER RENDER ---
         function renderRoster() {
             const list = document.getElementById('roster-list');
+            if (!list) return;
             list.innerHTML = '';
             
+            const btnDownload = document.getElementById('btn-download');
             if(roster.length === 0) {
                 list.innerHTML = '<p style="color:var(--text-muted); text-align:center;">Your drafted crewmates will appear here.</p>';
-                document.getElementById('btn-download').style.display = 'none';
+                if (btnDownload) btnDownload.style.display = 'none';
                 return;
             }
             
@@ -699,86 +752,94 @@
                 list.prepend(card);
             });
             
-            document.getElementById('btn-download').style.display = 'block';
+            if (btnDownload) btnDownload.style.display = 'block';
         }
 
         // --- EXPORT ---
-        document.getElementById('btn-download').addEventListener('click', () => {
-            let md = "# Vanguard Corsair Fleet Roster\n\n";
-            roster.forEach((c, i) => {
-                md += `### ${roster.length - i}. ${c.name}\n`;
-                md += `* **Identity:** ${c.template !== 'None' ? c.template + ' ' : ''}${c.race} | ${c.charClass}\n`;
-                md += `* **Origin:** ${c.origin}\n`;
-                if(c.originTraits && c.originTraits.length > 0) md += `* **Origin Traits:** ${c.originTraits.join('; ')}\n`;
-                md += `* **Fleet Role:** ${c.role}\n`;
-                md += `* **Signature Weapon:** ${c.weapon}\n`;
-                if(c.stats) md += `* **Attributes:** STR ${c.stats[0]} | DEX ${c.stats[1]} | CON ${c.stats[2]} | INT ${c.stats[3]} | WIS ${c.stats[4]} | CHA ${c.stats[5]}\n\n`;
-                else md += `\n`;
-                md += `***\n\n`;
-            });
-            
-            const blob = new Blob([md], { type: 'text/markdown' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'Vanguard_Fleet_Roster_V5-1.md';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        });
-    
-        // Class Details Modal Logic
-        document.getElementById('btn-view-class-details').addEventListener('click', () => {
-            const className = document.getElementById('class-input').value;
-            const modal = document.getElementById('class-modal');
-            const title = document.getElementById('modal-class-title');
-            const desc = document.getElementById('modal-class-desc');
-            const tableContainer = document.getElementById('modal-class-table-container');
-            
-            if (!className) return;
-            
-            title.textContent = className;
-            tableContainer.innerHTML = '';
-            
-            if (db.Class_Details && db.Class_Details[className]) {
-                const details = db.Class_Details[className];
-                desc.textContent = details.description;
-                
-                let tableHTML = `<table style="width:100%; border-collapse:collapse; text-align:left; color:var(--text-main); font-size:0.9em; margin-bottom:20px;">
-                    <thead>
-                        <tr style="border-bottom:2px solid var(--accent-cyan); background:rgba(0, 255, 255, 0.1);">
-                            <th style="padding:10px;">Lvl</th>
-                            <th style="padding:10px;">BAB</th>
-                            <th style="padding:10px;">Fort</th>
-                            <th style="padding:10px;">Ref</th>
-                            <th style="padding:10px;">Will</th>
-                            <th style="padding:10px;">Special</th>
-                        </tr>
-                    </thead>
-                    <tbody>`;
-                
-                details.progression.forEach((row, i) => {
-                    const bg = i % 2 === 0 ? 'background:rgba(255,255,255,0.02);' : '';
-                    tableHTML += `<tr style="border-bottom:1px solid var(--border-active); ${bg}">
-                        <td style="padding:10px; color:var(--accent-cyan); font-weight:bold;">${row.level}</td>
-                        <td style="padding:10px;">${row.bab}</td>
-                        <td style="padding:10px;">${row.fort}</td>
-                        <td style="padding:10px;">${row.ref}</td>
-                        <td style="padding:10px;">${row.will}</td>
-                        <td style="padding:10px; color:var(--accent-pink);">${row.special}</td>
-                    </tr>`;
+        const btnDownload = document.getElementById('btn-download');
+        if (btnDownload) {
+            btnDownload.addEventListener('click', () => {
+                let md = "# Vanguard Corsair Fleet Roster\n\n";
+                roster.forEach((c, i) => {
+                    md += `### ${roster.length - i}. ${c.name}\n`;
+                    md += `* **Identity:** ${c.template !== 'None' ? c.template + ' ' : ''}${c.race} | ${c.charClass}\n`;
+                    md += `* **Origin:** ${c.origin}\n`;
+                    if(c.originTraits && c.originTraits.length > 0) md += `* **Origin Traits:** ${c.originTraits.join('; ')}\n`;
+                    md += `* **Fleet Role:** ${c.role}\n`;
+                    md += `* **Signature Weapon:** ${c.weapon}\n`;
+                    if(c.stats) md += `* **Attributes:** STR ${c.stats[0]} | DEX ${c.stats[1]} | CON ${c.stats[2]} | INT ${c.stats[3]} | WIS ${c.stats[4]} | CHA ${c.stats[5]}\n\n`;
+                    else md += `\n`;
+                    md += `***\n\n`;
                 });
                 
-                tableHTML += `</tbody></table>`;
-                tableContainer.innerHTML = tableHTML;
-                modal.style.display = 'block';
-            } else {
-                desc.textContent = "No detailed custom progression found for this class. It likely uses standard SRD rules.";
-                tableContainer.innerHTML = "<p style='color:var(--border-active); padding:20px; border:1px dashed var(--border-active); text-align:center;'>Please click the 📖 icon next to the class input to search the SRD.</p>";
-                modal.style.display = 'block';
-            }
-        });
+                const blob = new Blob([md], { type: 'text/markdown' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'Vanguard_Fleet_Roster_V5-1.md';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+        }
+    
+        // Class Details Modal Logic
+        const btnViewClass = document.getElementById('btn-view-class-details');
+        if (btnViewClass) {
+            btnViewClass.addEventListener('click', () => {
+                const className = document.getElementById('class-input').value;
+                const modal = document.getElementById('class-modal');
+                const title = document.getElementById('modal-class-title');
+                const desc = document.getElementById('modal-class-desc');
+                const tableContainer = document.getElementById('modal-class-table-container');
+                
+                if (!className || !modal || !title || !desc || !tableContainer) return;
+                
+                title.textContent = className;
+                tableContainer.innerHTML = '';
+                
+                if (db.Class_Details && db.Class_Details[className]) {
+                    const details = db.Class_Details[className];
+                    desc.textContent = details.description || '';
+                    
+                    let tableHTML = `<table style="width:100%; border-collapse:collapse; text-align:left; color:var(--text-main); font-size:0.9em; margin-bottom:20px;">
+                        <thead>
+                            <tr style="border-bottom:2px solid var(--accent-cyan); background:rgba(0, 255, 255, 0.1);">
+                                <th style="padding:10px;">Lvl</th>
+                                <th style="padding:10px;">BAB</th>
+                                <th style="padding:10px;">Fort</th>
+                                <th style="padding:10px;">Ref</th>
+                                <th style="padding:10px;">Will</th>
+                                <th style="padding:10px;">Special</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+                    
+                    if (details.progression && Array.isArray(details.progression)) {
+                        details.progression.forEach((row, i) => {
+                            const bg = i % 2 === 0 ? 'background:rgba(255,255,255,0.02);' : '';
+                            tableHTML += `<tr style="border-bottom:1px solid var(--border-active); ${bg}">
+                                <td style="padding:10px; color:var(--accent-cyan); font-weight:bold;">${row.level || ''}</td>
+                                <td style="padding:10px;">${row.bab || ''}</td>
+                                <td style="padding:10px;">${row.fort || ''}</td>
+                                <td style="padding:10px;">${row.ref || ''}</td>
+                                <td style="padding:10px;">${row.will || ''}</td>
+                                <td style="padding:10px; color:var(--accent-pink);">${row.special || ''}</td>
+                            </tr>`;
+                        });
+                    }
+                    
+                    tableHTML += `</tbody></table>`;
+                    tableContainer.innerHTML = tableHTML;
+                    modal.style.display = 'block';
+                } else {
+                    desc.textContent = "No detailed custom progression found for this class. It likely uses standard SRD rules.";
+                    tableContainer.innerHTML = "<p style='color:var(--border-active); padding:20px; border:1px dashed var(--border-active); text-align:center;'>Please click the 📖 icon next to the class input to search the SRD.</p>";
+                    modal.style.display = 'block';
+                }
+            });
+        }
 
     </script>
 
