@@ -391,7 +391,7 @@
         const roleDesc = document.getElementById('role-desc');
         function updateRoleDesc() {
             const val = roleSelect.value;
-            const r = db.Roles.find(x => x.name === val);
+            const r = getRoleObj(val);
             roleDesc.innerHTML = r ? `<em>Mechanic: ${r.desc}</em>` : '';
         }
         roleSelect.addEventListener('change', updateRoleDesc);
