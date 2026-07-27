@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vanguard Origins</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+<style>
+    :root {
+        --bg-main: #0B0E14;
+        --bg-panel: rgba(16, 22, 34, 0.7);
+        --text-main: #E2E8F0;
+        --text-muted: #94A3B8;
+        --accent-cyan: #00F0FF;
+        --accent-blue: #0066FF;
+        --accent-purple: #8A2BE2;
+        --border-glow: rgba(0, 240, 255, 0.3);
+    }
+    body {
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+        background: radial-gradient(circle at center, var(--bg-main) 0%, #05070A 100%);
+        color: var(--text-main);
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+    }
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+    h1 {
+        font-size: 3em;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 50px;
+        text-shadow: 0 0 20px rgba(0,240,255,0.2);
+    }
+    h2 {
+        color: var(--accent-cyan);
+        border-bottom: 1px solid var(--border-glow);
+        padding-bottom: 10px;
+        margin-top: 40px;
+    }
+    .nav-bar {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 40px;
+    }
+    .nav-btn {
+        background: rgba(0, 240, 255, 0.1);
+        border: 1px solid var(--accent-cyan);
+        color: var(--accent-cyan);
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+    .nav-btn:hover {
+        background: rgba(0, 240, 255, 0.3);
+        box-shadow: 0 0 15px rgba(0,240,255,0.4);
+    }
+    .panel {
+        background: var(--bg-panel);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        backdrop-filter: blur(10px);
+    }
+    .trait-item {
+        margin-bottom: 15px;
+    }
+    .trait-name {
+        font-weight: bold;
+        color: #fff;
+    }
+    .trait-desc {
+        color: var(--text-muted);
+        margin-top: 5px;
+        line-height: 1.5;
+    }
+</style>
+
+</head>
+<body>
+    <div class="container">
+        <div class="nav-bar">
+            <a href="guide.html" class="nav-btn">← Back to Hub</a>
+            <a href="index.html" class="nav-btn">Generator</a>
+        </div>
+        <h1>Custom Origins</h1>
+        
+        <div class="panel">
+            <h3 style="color: var(--accent-purple); margin-top: 0;">Original Vael-Kaelor Clan</h3>
+            
+            <div class="trait-item">
+                <span class="trait-name">Bloodline of the First Sovereign:</span>
+                <span class="trait-desc">Telepathy with Sovereign Mark, Fear Immunity</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Echoes of the Shattered World:</span>
+                <span class="trait-desc">Reverse time by 1 round once per week</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Chronal Resilience:</span>
+                <span class="trait-desc">+2 save vs time-altering effects</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Ancestral Recall:</span>
+                <span class="trait-desc">Once per day, massive bonus to a skill check</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Silver-Wood Initiate:</span>
+                <span class="trait-desc">Free inherent nature SLA</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Veteran's Grit:</span>
+                <span class="trait-desc">Max HP at first level, +1 to Fortitude saves</span>
+            </div>
+            
+        </div>
+        
+        <div class="panel">
+            <h3 style="color: var(--accent-purple); margin-top: 0;">Thessalan Captive - Freed</h3>
+            
+            <div class="trait-item">
+                <span class="trait-name">Pneumatic Bone-Lacing:</span>
+                <span class="trait-desc">+4 to Strength checks, Bones act as Adamantine</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Blood-Stone Core:</span>
+                <span class="trait-desc">Can channel 1 spell level per HD as temporary HP</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Aberrant Spliced Limb:</span>
+                <span class="trait-desc">Extra tentacle or claw attack (1d6 damage)</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Alchemical Conduit:</span>
+                <span class="trait-desc">Immunity to poisons, can secrete acid on weapons</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Mind-Scrubbed:</span>
+                <span class="trait-desc">Immunity to charm and compulsion effects</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Subdermal Armor Plating:</span>
+                <span class="trait-desc">+4 Natural Armor Bonus</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Pain-Nullification Node:</span>
+                <span class="trait-desc">Ignore all penalties from wounds or pain effects</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Acid-Spitter Gland:</span>
+                <span class="trait-desc">Breath weapon (3d6 acid, 15ft cone) usable 1/day</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Psionic-Resonance Crystals:</span>
+                <span class="trait-desc">Gain 1 minor psionic talent and 3 power points</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Bio-luminescent Veins:</span>
+                <span class="trait-desc">Shed light at will, +4 bonus on Intimidate</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Aether-Jack Interface:</span>
+                <span class="trait-desc">Can interface with Vanguard magick-terminals seamlessly</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Venomous Fangs:</span>
+                <span class="trait-desc">Bite attack delivers a paralytic toxin (Fort save)</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Spirit-Glass Ocular Graft:</span>
+                <span class="trait-desc">Darkvision 120ft and See Invisibility</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Heart of the Leviathan:</span>
+                <span class="trait-desc">Breathe underwater, Swim speed equal to land speed</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Void-Glass Carapace:</span>
+                <span class="trait-desc">Spell Resistance equal to 11 + Character Level</span>
+            </div>
+            
+        </div>
+        
+        <div class="panel">
+            <h3 style="color: var(--accent-purple); margin-top: 0;">The Broken Inquisitor</h3>
+            
+            <div class="trait-item">
+                <span class="trait-name">Arcane-Faith Baffle:</span>
+                <span class="trait-desc">+2 bonus on Will saves vs mind-affecting magic via a cranial sigil.</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Biometric Interrogation:</span>
+                <span class="trait-desc">+4 on Intimidate checks; can detect heart rate spikes to sense lies.</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Truth-Lock Field:</span>
+                <span class="trait-desc">Can deploy a arcane emitter that acts as Zone of Truth 1/day.</span>
+            </div>
+            
+        </div>
+        
+        <div class="panel">
+            <h3 style="color: var(--accent-purple); margin-top: 0;">Pink Lab Survivor</h3>
+            
+            <div class="trait-item">
+                <span class="trait-name">Unstable Bio-Mutagen:</span>
+                <span class="trait-desc">1/day, inject a glowing pink serum to gain +4 to a physical stat but take -2 to a mental stat for 1 hour.</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Nanite Flesh-Knit:</span>
+                <span class="trait-desc">Regain 1 HP per minute passively while below half health via alchemical repairing humors.</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Alchemical Sieve Graft:</span>
+                <span class="trait-desc">Immunity to non-magical diseases and +2 vs poisons.</span>
+            </div>
+            
+        </div>
+        
+        <div class="panel">
+            <h3 style="color: var(--accent-purple); margin-top: 0;">Chronal Ghost</h3>
+            
+            <div class="trait-item">
+                <span class="trait-name">Phase-Shift Emitter:</span>
+                <span class="trait-desc">Can teleport 10 ft as a swift action 1/day using a wrist-mounted chronal-metronome.</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Desynchronized Aura:</span>
+                <span class="trait-desc">10% miss chance on incoming attacks (as Blur), caused by a malfunctioning temporal dampener.</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Time-Dilation Module:</span>
+                <span class="trait-desc">Reroll a failed Reflex save 1/day by locally slowing time.</span>
+            </div>
+            
+        </div>
+        
+        <div class="panel">
+            <h3 style="color: var(--accent-purple); margin-top: 0;">Abyssal Dredge</h3>
+            
+            <div class="trait-item">
+                <span class="trait-name">Pressure-Sealed Carapace:</span>
+                <span class="trait-desc">Immune to damage from high water pressure; +2 natural armor from grafted diving plating.</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Sonar Lenses:</span>
+                <span class="trait-desc">Darkvision 60 ft; cannot be blinded by magical darkness due to sonar-assisted lenses.</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Cryo-Brine Vent:</span>
+                <span class="trait-desc">1/day, vent supercooled alchemical brine from your suit, adding 1d6 cold/acid damage to a melee attack.</span>
+            </div>
+            
+        </div>
+        
+        <div class="panel">
+            <h3 style="color: var(--accent-purple); margin-top: 0;">Bureaucratic Defector</h3>
+            
+            <div class="trait-item">
+                <span class="trait-name">Aether-Spike Protocol:</span>
+                <span class="trait-desc">+4 on Diplomacy and Sense Motive checks by instantly accessing public records and mind-archives via ocular lens.</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Signal Scrambler:</span>
+                <span class="trait-desc">Immune to low-level divination/scrying (as Nondetection) via a wearable abjuration field.</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Black-Market Replicator:</span>
+                <span class="trait-desc">Start with 50% more starting wealth in the form of universal merchant-chits.</span>
+            </div>
+            
+        </div>
+        
+        <div class="panel">
+            <h3 style="color: var(--accent-purple); margin-top: 0;">Awakened Thrall</h3>
+            
+            <div class="trait-item">
+                <span class="trait-name">Severed Control Collar:</span>
+                <span class="trait-desc">+4 on saves vs Mind-Affecting effects due to a burnt-out arcane collar.</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Residual Hive-Link:</span>
+                <span class="trait-desc">Can use Detect Thoughts 1/day by tapping into local unwarded brainwaves.</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Stim-Regulator:</span>
+                <span class="trait-desc">Immune to magical sleep and fatigue via alchemical adrenaline valves.</span>
+            </div>
+            
+        </div>
+        
+        <div class="panel">
+            <h3 style="color: var(--accent-purple); margin-top: 0;">Defeated Pirate-Lord</h3>
+            
+            <div class="trait-item">
+                <span class="trait-name">Command Aura Censer:</span>
+                <span class="trait-desc">+2 bonus to Leadership score, projecting a localized morale-boosting pheromone/incantation field.</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Smuggler's Void-Pocket:</span>
+                <span class="trait-desc">1/day, magically produce a standard non-magical item worth under 100gp from a micro-dimensional pocket-graft.</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Clockwork Stabilizers:</span>
+                <span class="trait-desc">+4 to Acrobatics/Balance on moving surfaces via leg grafts.</span>
+            </div>
+            
+        </div>
+        
+        <div class="panel">
+            <h3 style="color: var(--accent-purple); margin-top: 0;">Sovereign Loyalist</h3>
+            
+            <div class="trait-item">
+                <span class="trait-name">Sovereign's Aegis Matrix:</span>
+                <span class="trait-desc">+1 luck bonus to AC and all Saving Throws via a persistent aetheric micro-shield.</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Targeting Override:</span>
+                <span class="trait-desc">1/day, let the combat-precognition take over, treating a missed attack roll as a natural 20.</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">360-Degree Threat Sensors:</span>
+                <span class="trait-desc">Cannot be flanked due to integrated tremor-senses.</span>
+            </div>
+            
+        </div>
+        
+        <div class="panel">
+            <h3 style="color: var(--accent-purple); margin-top: 0;">Street-Urchin Recruit</h3>
+            
+            <div class="trait-item">
+                <span class="trait-name">Clockwork Leg-Braces:</span>
+                <span class="trait-desc">+10 ft to base land speed.</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Active-Camo Cloak:</span>
+                <span class="trait-desc">+4 to Stealth and Sleight of Hand.</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Probability-Loom Scraps:</span>
+                <span class="trait-desc">Can reroll a 1 on any d20 roll, once per day, using scavenged luck-magick.</span>
+            </div>
+            
+        </div>
+        
+        <div class="panel">
+            <h3 style="color: var(--accent-purple); margin-top: 0;">Assimilated Noble</h3>
+            
+            <div class="trait-item">
+                <span class="trait-name">Cognitive Mind-Palace:</span>
+                <span class="trait-desc">Gain 3 additional skill points per level, must be spent on Knowledge skills, representing a slotted memory-crystal.</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Neuro-Linguistic Programmer:</span>
+                <span class="trait-desc">1/day, cast Suggestion as a spell-like ability via subliminal enchantments.</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Glamer-Weave Formalwear:</span>
+                <span class="trait-desc">Treat all light armor as having +1 max Dex bonus and 0 armor check penalty.</span>
+            </div>
+            
+        </div>
+        
+        <div class="panel">
+            <h3 style="color: var(--accent-purple); margin-top: 0;">Inquisition Sleeper Agent</h3>
+            
+            <div class="trait-item">
+                <span class="trait-name">Alignment Spoofer:</span>
+                <span class="trait-desc">Spells and abilities detect you as whatever alignment you program into your subdermal sigil.</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Magnetic Concealment:</span>
+                <span class="trait-desc">+4 to conceal weapons, and drawing a concealed weapon is a free action via gravimetric repulsors.</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Overdrive Stim:</span>
+                <span class="trait-desc">1/day, flood your system with chronal-elixir to gain the benefits of Haste for 3 rounds.</span>
+            </div>
+            
+        </div>
+        
+        <div class="panel">
+            <h3 style="color: var(--accent-purple); margin-top: 0;">Freed Deep-Water Seraph</h3>
+            
+            <div class="trait-item">
+                <span class="trait-name">Aqua-Loom Propulsors:</span>
+                <span class="trait-desc">Swim speed equal to land speed, and integrated gills allow breathing underwater.</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Resonance Emitter:</span>
+                <span class="trait-desc">1/day, emit a sonic blast (2d6 sonic damage, 15 ft cone, Fort save or deafened) from vocal-cord grafts.</span>
+            </div>
+            
+            <div class="trait-item">
+                <span class="trait-name">Bioluminescent Halo-Projector:</span>
+                <span class="trait-desc">Can shed dim light in a 20ft radius, granting allies a tactical +1 to attack rolls via mind-link sharing.</span>
+            </div>
+            
+        </div>
+        
+    </div>
+</body>
+</html>
